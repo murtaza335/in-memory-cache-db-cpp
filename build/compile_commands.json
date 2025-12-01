@@ -1,0 +1,32 @@
+[
+{
+  "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
+  "command": "C:\\PROGRA~1\\MinGW\\bin\\G__~1.EXE  @CMakeFiles/DSA.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\DSA.dir\\main.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\main.cpp\"",
+  "file": "E:/NUST/PROJECTS/SEM 3/dsa/main.cpp",
+  "output": "CMakeFiles/DSA.dir/main.cpp.obj"
+},
+{
+  "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
+  "command": "C:\\PROGRA~1\\MinGW\\bin\\G__~1.EXE  @CMakeFiles/DSA.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\DSA.dir\\src\\parser\\parser.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\parser\\parser.cpp\"",
+  "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/parser/parser.cpp",
+  "output": "CMakeFiles/DSA.dir/src/parser/parser.cpp.obj"
+},
+{
+  "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
+  "command": "C:\\PROGRA~1\\MinGW\\bin\\G__~1.EXE  @CMakeFiles/DSA.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\DSA.dir\\src\\server\\TCPclient.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\server\\TCPclient.cpp\"",
+  "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/server/TCPclient.cpp",
+  "output": "CMakeFiles/DSA.dir/src/server/TCPclient.cpp.obj"
+},
+{
+  "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
+  "command": "C:\\PROGRA~1\\MinGW\\bin\\G__~1.EXE  @CMakeFiles/DSA.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\DSA.dir\\src\\server\\TCPserver.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\server\\TCPserver.cpp\"",
+  "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/server/TCPserver.cpp",
+  "output": "CMakeFiles/DSA.dir/src/server/TCPserver.cpp.obj"
+},
+{
+  "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
+  "command": "C:\\PROGRA~1\\MinGW\\bin\\G__~1.EXE  @CMakeFiles/DSA.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\DSA.dir\\src\\storage\\murmurhash\\murmurhash3.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\storage\\murmurhash\\murmurhash3.cpp\"",
+  "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/storage/murmurhash/murmurhash3.cpp",
+  "output": "CMakeFiles/DSA.dir/src/storage/murmurhash/murmurhash3.cpp.obj"
+}
+]
