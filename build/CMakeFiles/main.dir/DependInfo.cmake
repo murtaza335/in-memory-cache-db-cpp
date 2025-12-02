@@ -10,7 +10,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "E:/NUST/PROJECTS/SEM 3/dsa/src/main.cpp" "CMakeFiles/main.dir/src/main.cpp.obj" "gcc" "CMakeFiles/main.dir/src/main.cpp.obj.d"
   "E:/NUST/PROJECTS/SEM 3/dsa/src/server/server.cpp" "CMakeFiles/main.dir/src/server/server.cpp.obj" "gcc" "CMakeFiles/main.dir/src/server/server.cpp.obj.d"
+  "E:/NUST/PROJECTS/SEM 3/dsa/src/storage/liststore.cpp" "CMakeFiles/main.dir/src/storage/liststore.cpp.obj" "gcc" "CMakeFiles/main.dir/src/storage/liststore.cpp.obj.d"
   "E:/NUST/PROJECTS/SEM 3/dsa/src/storage/murmurhash/murmurhash3.cpp" "CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj" "gcc" "CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj.d"
+  "E:/NUST/PROJECTS/SEM 3/dsa/src/storage/stringstore.cpp" "CMakeFiles/main.dir/src/storage/stringstore.cpp.obj" "gcc" "CMakeFiles/main.dir/src/storage/stringstore.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

@@ -176,6 +176,30 @@ src/server/server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/server/server.cpp.s
 .PHONY : src/server/server.cpp.s
 
+src/storage/liststore.obj: src/storage/liststore.cpp.obj
+.PHONY : src/storage/liststore.obj
+
+# target to build an object file
+src/storage/liststore.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/liststore.cpp.obj
+.PHONY : src/storage/liststore.cpp.obj
+
+src/storage/liststore.i: src/storage/liststore.cpp.i
+.PHONY : src/storage/liststore.i
+
+# target to preprocess a source file
+src/storage/liststore.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/liststore.cpp.i
+.PHONY : src/storage/liststore.cpp.i
+
+src/storage/liststore.s: src/storage/liststore.cpp.s
+.PHONY : src/storage/liststore.s
+
+# target to generate assembly for a file
+src/storage/liststore.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/liststore.cpp.s
+.PHONY : src/storage/liststore.cpp.s
+
 src/storage/murmurhash/murmurhash3.obj: src/storage/murmurhash/murmurhash3.cpp.obj
 .PHONY : src/storage/murmurhash/murmurhash3.obj
 
@@ -200,6 +224,30 @@ src/storage/murmurhash/murmurhash3.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.s
 .PHONY : src/storage/murmurhash/murmurhash3.cpp.s
 
+src/storage/stringstore.obj: src/storage/stringstore.cpp.obj
+.PHONY : src/storage/stringstore.obj
+
+# target to build an object file
+src/storage/stringstore.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/stringstore.cpp.obj
+.PHONY : src/storage/stringstore.cpp.obj
+
+src/storage/stringstore.i: src/storage/stringstore.cpp.i
+.PHONY : src/storage/stringstore.i
+
+# target to preprocess a source file
+src/storage/stringstore.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/stringstore.cpp.i
+.PHONY : src/storage/stringstore.cpp.i
+
+src/storage/stringstore.s: src/storage/stringstore.cpp.s
+.PHONY : src/storage/stringstore.s
+
+# target to generate assembly for a file
+src/storage/stringstore.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/stringstore.cpp.s
+.PHONY : src/storage/stringstore.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -215,9 +263,15 @@ help:
 	@echo ... src/server/server.obj
 	@echo ... src/server/server.i
 	@echo ... src/server/server.s
+	@echo ... src/storage/liststore.obj
+	@echo ... src/storage/liststore.i
+	@echo ... src/storage/liststore.s
 	@echo ... src/storage/murmurhash/murmurhash3.obj
 	@echo ... src/storage/murmurhash/murmurhash3.i
 	@echo ... src/storage/murmurhash/murmurhash3.s
+	@echo ... src/storage/stringstore.obj
+	@echo ... src/storage/stringstore.i
+	@echo ... src/storage/stringstore.s
 .PHONY : help
 
 
