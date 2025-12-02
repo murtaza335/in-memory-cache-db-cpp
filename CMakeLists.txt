@@ -10,3 +10,7 @@ add_executable(main
     src/storage/murmurhash/murmurhash3.cpp
     src/server/server.cpp
 )
+
+if (WIN32)
+    target_link_libraries(main PRIVATE ws2_32)
+endif()
