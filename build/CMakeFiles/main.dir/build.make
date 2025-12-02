@@ -76,50 +76,82 @@ CMakeFiles/main.dir/src/main.cpp.obj: CMakeFiles/main.dir/includes_CXX.rsp
 CMakeFiles/main.dir/src/main.cpp.obj: E:/NUST/PROJECTS/SEM\ 3/dsa/src/main.cpp
 CMakeFiles/main.dir/src/main.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="E:\NUST\PROJECTS\SEM 3\dsa\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/src/main.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/main.cpp.obj -MF CMakeFiles\main.dir\src\main.cpp.obj.d -o CMakeFiles\main.dir\src\main.cpp.obj -c "E:\NUST\PROJECTS\SEM 3\dsa\src\main.cpp"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/main.cpp.obj -MF CMakeFiles\main.dir\src\main.cpp.obj.d -o CMakeFiles\main.dir\src\main.cpp.obj -c "E:\NUST\PROJECTS\SEM 3\dsa\src\main.cpp"
 
 CMakeFiles/main.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/main.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "E:\NUST\PROJECTS\SEM 3\dsa\src\main.cpp" > CMakeFiles\main.dir\src\main.cpp.i
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "E:\NUST\PROJECTS\SEM 3\dsa\src\main.cpp" > CMakeFiles\main.dir\src\main.cpp.i
 
 CMakeFiles/main.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/main.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "E:\NUST\PROJECTS\SEM 3\dsa\src\main.cpp" -o CMakeFiles\main.dir\src\main.cpp.s
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "E:\NUST\PROJECTS\SEM 3\dsa\src\main.cpp" -o CMakeFiles\main.dir\src\main.cpp.s
 
 CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj: CMakeFiles/main.dir/includes_CXX.rsp
 CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj: E:/NUST/PROJECTS/SEM\ 3/dsa/src/storage/murmurhash/murmurhash3.cpp
 CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="E:\NUST\PROJECTS\SEM 3\dsa\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj -MF CMakeFiles\main.dir\src\storage\murmurhash\murmurhash3.cpp.obj.d -o CMakeFiles\main.dir\src\storage\murmurhash\murmurhash3.cpp.obj -c "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\murmurhash\murmurhash3.cpp"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj -MF CMakeFiles\main.dir\src\storage\murmurhash\murmurhash3.cpp.obj.d -o CMakeFiles\main.dir\src\storage\murmurhash\murmurhash3.cpp.obj -c "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\murmurhash\murmurhash3.cpp"
 
 CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\murmurhash\murmurhash3.cpp" > CMakeFiles\main.dir\src\storage\murmurhash\murmurhash3.cpp.i
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\murmurhash\murmurhash3.cpp" > CMakeFiles\main.dir\src\storage\murmurhash\murmurhash3.cpp.i
 
 CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\murmurhash\murmurhash3.cpp" -o CMakeFiles\main.dir\src\storage\murmurhash\murmurhash3.cpp.s
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\murmurhash\murmurhash3.cpp" -o CMakeFiles\main.dir\src\storage\murmurhash\murmurhash3.cpp.s
+
+CMakeFiles/main.dir/src/storage/liststore.cpp.obj: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/storage/liststore.cpp.obj: CMakeFiles/main.dir/includes_CXX.rsp
+CMakeFiles/main.dir/src/storage/liststore.cpp.obj: E:/NUST/PROJECTS/SEM\ 3/dsa/src/storage/liststore.cpp
+CMakeFiles/main.dir/src/storage/liststore.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="E:\NUST\PROJECTS\SEM 3\dsa\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/src/storage/liststore.cpp.obj"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/storage/liststore.cpp.obj -MF CMakeFiles\main.dir\src\storage\liststore.cpp.obj.d -o CMakeFiles\main.dir\src\storage\liststore.cpp.obj -c "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\liststore.cpp"
+
+CMakeFiles/main.dir/src/storage/liststore.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/storage/liststore.cpp.i"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\liststore.cpp" > CMakeFiles\main.dir\src\storage\liststore.cpp.i
+
+CMakeFiles/main.dir/src/storage/liststore.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/storage/liststore.cpp.s"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\liststore.cpp" -o CMakeFiles\main.dir\src\storage\liststore.cpp.s
+
+CMakeFiles/main.dir/src/storage/stringstore.cpp.obj: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/storage/stringstore.cpp.obj: CMakeFiles/main.dir/includes_CXX.rsp
+CMakeFiles/main.dir/src/storage/stringstore.cpp.obj: E:/NUST/PROJECTS/SEM\ 3/dsa/src/storage/stringstore.cpp
+CMakeFiles/main.dir/src/storage/stringstore.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="E:\NUST\PROJECTS\SEM 3\dsa\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/main.dir/src/storage/stringstore.cpp.obj"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/storage/stringstore.cpp.obj -MF CMakeFiles\main.dir\src\storage\stringstore.cpp.obj.d -o CMakeFiles\main.dir\src\storage\stringstore.cpp.obj -c "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\stringstore.cpp"
+
+CMakeFiles/main.dir/src/storage/stringstore.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/storage/stringstore.cpp.i"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\stringstore.cpp" > CMakeFiles\main.dir\src\storage\stringstore.cpp.i
+
+CMakeFiles/main.dir/src/storage/stringstore.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/storage/stringstore.cpp.s"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "E:\NUST\PROJECTS\SEM 3\dsa\src\storage\stringstore.cpp" -o CMakeFiles\main.dir\src\storage\stringstore.cpp.s
 
 CMakeFiles/main.dir/src/server/server.cpp.obj: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/server/server.cpp.obj: CMakeFiles/main.dir/includes_CXX.rsp
 CMakeFiles/main.dir/src/server/server.cpp.obj: E:/NUST/PROJECTS/SEM\ 3/dsa/src/server/server.cpp
 CMakeFiles/main.dir/src/server/server.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="E:\NUST\PROJECTS\SEM 3\dsa\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/src/server/server.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/server/server.cpp.obj -MF CMakeFiles\main.dir\src\server\server.cpp.obj.d -o CMakeFiles\main.dir\src\server\server.cpp.obj -c "E:\NUST\PROJECTS\SEM 3\dsa\src\server\server.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="E:\NUST\PROJECTS\SEM 3\dsa\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/main.dir/src/server/server.cpp.obj"
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/server/server.cpp.obj -MF CMakeFiles\main.dir\src\server\server.cpp.obj.d -o CMakeFiles\main.dir\src\server\server.cpp.obj -c "E:\NUST\PROJECTS\SEM 3\dsa\src\server\server.cpp"
 
 CMakeFiles/main.dir/src/server/server.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/server/server.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "E:\NUST\PROJECTS\SEM 3\dsa\src\server\server.cpp" > CMakeFiles\main.dir\src\server\server.cpp.i
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "E:\NUST\PROJECTS\SEM 3\dsa\src\server\server.cpp" > CMakeFiles\main.dir\src\server\server.cpp.i
 
 CMakeFiles/main.dir/src/server/server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/server/server.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "E:\NUST\PROJECTS\SEM 3\dsa\src\server\server.cpp" -o CMakeFiles\main.dir\src\server\server.cpp.s
+	C:\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "E:\NUST\PROJECTS\SEM 3\dsa\src\server\server.cpp" -o CMakeFiles\main.dir\src\server\server.cpp.s
 
 # Object files for target main
 main_OBJECTS = \
 "CMakeFiles/main.dir/src/main.cpp.obj" \
 "CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj" \
+"CMakeFiles/main.dir/src/storage/liststore.cpp.obj" \
+"CMakeFiles/main.dir/src/storage/stringstore.cpp.obj" \
 "CMakeFiles/main.dir/src/server/server.cpp.obj"
 
 # External object files for target main
@@ -127,12 +159,14 @@ main_EXTERNAL_OBJECTS =
 
 main.exe: CMakeFiles/main.dir/src/main.cpp.obj
 main.exe: CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj
+main.exe: CMakeFiles/main.dir/src/storage/liststore.cpp.obj
+main.exe: CMakeFiles/main.dir/src/storage/stringstore.cpp.obj
 main.exe: CMakeFiles/main.dir/src/server/server.cpp.obj
 main.exe: CMakeFiles/main.dir/build.make
 main.exe: CMakeFiles/main.dir/linkLibs.rsp
 main.exe: CMakeFiles/main.dir/objects1.rsp
 main.exe: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="E:\NUST\PROJECTS\SEM 3\dsa\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable main.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="E:\NUST\PROJECTS\SEM 3\dsa\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable main.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\main.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
