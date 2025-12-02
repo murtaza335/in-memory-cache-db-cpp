@@ -116,120 +116,72 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named DSA
+# Target rules for targets named main
 
 # Build rule for target.
-DSA: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 DSA
-.PHONY : DSA
+main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 main
+.PHONY : main
 
 # fast build rule for target.
-DSA/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/build
-.PHONY : DSA/fast
+main/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/build
+.PHONY : main/fast
 
-main.obj: main.cpp.obj
-.PHONY : main.obj
-
-# target to build an object file
-main.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/main.cpp.obj
-.PHONY : main.cpp.obj
-
-main.i: main.cpp.i
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/main.cpp.s
-.PHONY : main.cpp.s
-
-src/parser/parser.obj: src/parser/parser.cpp.obj
-.PHONY : src/parser/parser.obj
+src/main.obj: src/main.cpp.obj
+.PHONY : src/main.obj
 
 # target to build an object file
-src/parser/parser.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/parser/parser.cpp.obj
-.PHONY : src/parser/parser.cpp.obj
+src/main.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/main.cpp.obj
+.PHONY : src/main.cpp.obj
 
-src/parser/parser.i: src/parser/parser.cpp.i
-.PHONY : src/parser/parser.i
+src/main.i: src/main.cpp.i
+.PHONY : src/main.i
 
 # target to preprocess a source file
-src/parser/parser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/parser/parser.cpp.i
-.PHONY : src/parser/parser.cpp.i
+src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
 
-src/parser/parser.s: src/parser/parser.cpp.s
-.PHONY : src/parser/parser.s
+src/main.s: src/main.cpp.s
+.PHONY : src/main.s
 
 # target to generate assembly for a file
-src/parser/parser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/parser/parser.cpp.s
-.PHONY : src/parser/parser.cpp.s
+src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
 
-src/server/TCPclient.obj: src/server/TCPclient.cpp.obj
-.PHONY : src/server/TCPclient.obj
+src/server/server.obj: src/server/server.cpp.obj
+.PHONY : src/server/server.obj
 
 # target to build an object file
-src/server/TCPclient.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/server/TCPclient.cpp.obj
-.PHONY : src/server/TCPclient.cpp.obj
+src/server/server.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/server/server.cpp.obj
+.PHONY : src/server/server.cpp.obj
 
-src/server/TCPclient.i: src/server/TCPclient.cpp.i
-.PHONY : src/server/TCPclient.i
-
-# target to preprocess a source file
-src/server/TCPclient.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/server/TCPclient.cpp.i
-.PHONY : src/server/TCPclient.cpp.i
-
-src/server/TCPclient.s: src/server/TCPclient.cpp.s
-.PHONY : src/server/TCPclient.s
-
-# target to generate assembly for a file
-src/server/TCPclient.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/server/TCPclient.cpp.s
-.PHONY : src/server/TCPclient.cpp.s
-
-src/server/TCPserver.obj: src/server/TCPserver.cpp.obj
-.PHONY : src/server/TCPserver.obj
-
-# target to build an object file
-src/server/TCPserver.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/server/TCPserver.cpp.obj
-.PHONY : src/server/TCPserver.cpp.obj
-
-src/server/TCPserver.i: src/server/TCPserver.cpp.i
-.PHONY : src/server/TCPserver.i
+src/server/server.i: src/server/server.cpp.i
+.PHONY : src/server/server.i
 
 # target to preprocess a source file
-src/server/TCPserver.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/server/TCPserver.cpp.i
-.PHONY : src/server/TCPserver.cpp.i
+src/server/server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/server/server.cpp.i
+.PHONY : src/server/server.cpp.i
 
-src/server/TCPserver.s: src/server/TCPserver.cpp.s
-.PHONY : src/server/TCPserver.s
+src/server/server.s: src/server/server.cpp.s
+.PHONY : src/server/server.s
 
 # target to generate assembly for a file
-src/server/TCPserver.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/server/TCPserver.cpp.s
-.PHONY : src/server/TCPserver.cpp.s
+src/server/server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/server/server.cpp.s
+.PHONY : src/server/server.cpp.s
 
 src/storage/murmurhash/murmurhash3.obj: src/storage/murmurhash/murmurhash3.cpp.obj
 .PHONY : src/storage/murmurhash/murmurhash3.obj
 
 # target to build an object file
 src/storage/murmurhash/murmurhash3.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/storage/murmurhash/murmurhash3.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.obj
 .PHONY : src/storage/murmurhash/murmurhash3.cpp.obj
 
 src/storage/murmurhash/murmurhash3.i: src/storage/murmurhash/murmurhash3.cpp.i
@@ -237,7 +189,7 @@ src/storage/murmurhash/murmurhash3.i: src/storage/murmurhash/murmurhash3.cpp.i
 
 # target to preprocess a source file
 src/storage/murmurhash/murmurhash3.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/storage/murmurhash/murmurhash3.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.i
 .PHONY : src/storage/murmurhash/murmurhash3.cpp.i
 
 src/storage/murmurhash/murmurhash3.s: src/storage/murmurhash/murmurhash3.cpp.s
@@ -245,7 +197,7 @@ src/storage/murmurhash/murmurhash3.s: src/storage/murmurhash/murmurhash3.cpp.s
 
 # target to generate assembly for a file
 src/storage/murmurhash/murmurhash3.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\DSA.dir\build.make CMakeFiles/DSA.dir/src/storage/murmurhash/murmurhash3.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/murmurhash/murmurhash3.cpp.s
 .PHONY : src/storage/murmurhash/murmurhash3.cpp.s
 
 # Help Target
@@ -256,19 +208,13 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
-	@echo ... DSA
-	@echo ... main.obj
-	@echo ... main.i
-	@echo ... main.s
-	@echo ... src/parser/parser.obj
-	@echo ... src/parser/parser.i
-	@echo ... src/parser/parser.s
-	@echo ... src/server/TCPclient.obj
-	@echo ... src/server/TCPclient.i
-	@echo ... src/server/TCPclient.s
-	@echo ... src/server/TCPserver.obj
-	@echo ... src/server/TCPserver.i
-	@echo ... src/server/TCPserver.s
+	@echo ... main
+	@echo ... src/main.obj
+	@echo ... src/main.i
+	@echo ... src/main.s
+	@echo ... src/server/server.obj
+	@echo ... src/server/server.i
+	@echo ... src/server/server.s
 	@echo ... src/storage/murmurhash/murmurhash3.obj
 	@echo ... src/storage/murmurhash/murmurhash3.i
 	@echo ... src/storage/murmurhash/murmurhash3.s
