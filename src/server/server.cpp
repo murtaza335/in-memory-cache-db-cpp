@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "server/server.hpp"
 #include <iostream>
 
 struct ClientParam {
