@@ -2,3 +2,4 @@
 /scope
 *.exe
 /.vscode
+/build

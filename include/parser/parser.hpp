@@ -1,20 +1,13 @@
-#ifndef PARSER_HPP
-#define PARSER_HPP
-
+#pragma once
 #include <string>
-#include <vector>
 
 class Parser {
 public:
-    Parser() = default;
-    ~Parser() = default;
-
-    // Parses raw input and returns response
-    std::string process(const std::string& input);
+    // This is the ONLY function you call from your server
+    std::string route(const std::string& rawInput);
 
 private:
-    // Helper: split string by space
-    std::vector<std::string> split(const std::string& str);
+    // internal helpers
+    std::string processCommand(const std::vector<std::string>& tokens);
+    std::vector<std::string> tokenize(const std::string& input);
 };
-
-#endif
