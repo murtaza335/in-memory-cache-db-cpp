@@ -1,30 +1,36 @@
-# In-Memory Cache DB (C++)
+This is a well-structured project description\! Here is the content formatted into a professional, clear, and scannable `README.md` using standard Markdown conventions and appropriate emojis.
 
-A lightweight, high-performance **in-memory key-value cache/database** implemented in modern C++. This project provides a simple and efficient RAM-based storage engine designed for extremely fast reads/writes, making it ideal for caching, temporary storage, and learning database internals.
+```markdown
+# 🚀 In-Memory Cache DB (C++)
+
+A lightweight, high-performance **in-memory key-value cache/database** implemented in modern C++.
+
+This project provides a simple and efficient RAM-based storage engine designed for extremely fast reads/writes, making it ideal for caching, temporary storage, and learning database internals.
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-* Fast in-memory key-value operations
-* Simple and clean C++ API
-* No external dependencies
-* Modular design (separate parser, string store, list store, etc.)
-* Supports strings, lists, and other data structures depending on your implementation
-* CMake-based build system
-* Easy to extend with additional data types or persistence
+* **⚡ High Performance:** Fast in-memory key-value operations.
+* **🧩 Modular Design:** Separate components for String Store, List Store, Parser, and Command Dispatcher.
+* **🛠️ Simple API:** Clean, straightforward C++ API.
+* **🚫 Zero Dependencies:** No external libraries required.
+* **🏗️ Extensible:** Easy to add new data types (e.g., HashMaps), TTL, and persistence mechanisms.
+* **⚙️ Build System:** Uses CMake for easy compilation across platforms.
 
 ---
 
 ## 📂 Project Structure
 
 ```
-├── include/            # Header files
-├── src/                # Core implementation (Parser, Stores, etc.)
-├── build/              # Build artifacts (after cmake ..)
-├── CMakeLists.txt      # Build configuration
-└── README.md           # Project documentation
-```
+
+├── include/            \# Public Header files for API and components
+├── src/                \# Core implementation (.cpp files for Parser, Stores, etc.)
+├── build/              \# Build artifacts (generated after running 'cmake ..')
+├── CMakeLists.txt      \# Main build configuration file
+└── README.md           \# Project documentation
+
+````
 
 ---
 
@@ -34,25 +40,27 @@ A lightweight, high-performance **in-memory key-value cache/database** implement
 
 * C++11 or newer
 * CMake 3.10+
-* g++/clang++/MSVC
+* A C++ compiler (g++/clang++/MSVC)
 
-### **Build Steps**
+### **Build Steps (Linux/macOS/WSL)**
+
+Clone the repository and build using CMake:
 
 ```bash
-git clone https://github.com/murtaza335/in-memory-cache-db-cpp.git
+git clone [https://github.com/murtaza335/in-memory-cache-db-cpp.git](https://github.com/murtaza335/in-memory-cache-db-cpp.git)
 cd in-memory-cache-db-cpp
 mkdir build && cd build
 cmake ..
 make
-```
+````
 
-This will generate an executable inside the `build/` directory.
+The compiled executable will be generated inside the `build/` directory.
 
----
+-----
 
 ## 📘 Basic Usage Example
 
-Below is a simplified example showing how you may interact with the cache:
+This example demonstrates direct interaction with the core data stores (`StringStore` and `ListStore`):
 
 ```cpp
 #include "StringStore.hpp"
@@ -60,87 +68,103 @@ Below is a simplified example showing how you may interact with the cache:
 #include <iostream>
 
 int main() {
+    // --- String Store Example ---
     StringStore sstore;
     sstore.set("name", "Murtaza");
 
     auto val = sstore.get("name");
-    if (val) std::cout << "Name = " << *val << std::endl;
+    if (val) {
+        std::cout << "GET: Name = " << *val << std::endl; // Output: Name = Murtaza
+    }
 
+    // --- List Store Example ---
     ListStore lstore;
     lstore.push("numbers", "10");
     lstore.push("numbers", "20");
+    lstore.push("numbers", "30");
 
     auto list = lstore.get("numbers");
     if (list) {
-        for (const auto& item : *list) std::cout << item << " ";
+        std::cout << "LGET: Numbers = ";
+        for (const auto& item : *list) {
+            std::cout << item << " ";
+        }
+        std::cout << std::endl; // Output: 10 20 30 
     }
 
     return 0;
 }
 ```
 
----
+-----
 
-## 🧠 How It Works
+## 🧠 How It Works: Core Components
 
-### **Core Components**
+| Component | Responsibility |
+| :--- | :--- |
+| **`StringStore`** | Manages key-value pairs where the value is a string. |
+| **`ListStore`** | Manages keys mapped to a list/vector of strings (like Redis Lists). |
+| **`Parser`** | Interprets raw input strings into structured commands (e.g., `SET`, `GET`). |
+| **`Command Dispatcher`** | Routes a parsed command to the correct data store for execution. |
 
-* **StringStore** → manages key-value string pairs
-* **ListStore** → manages lists of values under a key
-* **Parser** → interprets user commands (SET, GET, DEL, LIST operations, etc.)
-* **Command Dispatcher** → routes commands to the correct store
+The decoupled architecture simplifies the integration of new features like:
 
-The design makes it easy to add:
+  * HashMaps/Sets
+  * **TTL** (Time-To-Live) expiration
+  * **Concurrency** (using mutexes/shared locks)
+  * **Persistence** (AOF, snapshots)
 
-* HashMaps for fast lookup
-* TTL (time-to-live) expiration
-* Concurrency (mutexes, shared locks)
-* Persistence (AOF, snapshots)
+-----
 
----
+## 📝 Supported Commands (Parser Example)
 
-## 📝 Supported Commands (example)
+The following command syntax is interpreted by the `Parser` and executed by the `Command Dispatcher`:
 
-```
-SET key value
-GET key
-DEL key
-LPUSH key value
-LGET key
-```
+| Command | Store | Description | Example |
+| :--- | :--- | :--- | :--- |
+| `SET key value` | String | Sets a string value for a key. | `SET user:id 101` |
+| `GET key` | String | Retrieves the string value associated with a key. | `GET user:id` |
+| `DEL key` | All | Deletes the key and its associated value from the store. | `DEL user:id` |
+| `LPUSH key value` | List | Inserts a value at the head (left) of a list. | `LPUSH log:events "event_A"` |
+| `LGET key` | List | Retrieves all elements of a list. | `LGET log:events` |
 
-Command support depends on your Parser and Store logic.
+> Command support is dependent on the current implementation of the Parser and Store logic.
 
----
+-----
 
-## 📊 Future Improvements
+## 📈 Future Improvements
 
-* Add TTL support
-* LRU/LFU eviction
-* Multi-threaded access
-* Transaction support
-* Snapshot-based persistence
-* Network server mode (turn it into a mini-Redis clone)
+We plan to expand the project with the following features:
 
----
+  * **🕒 TTL Support:** Implement time-to-live expiration for keys.
+  * **🗑️ Eviction Policies:** Add LRU/LFU algorithms for automatic key eviction.
+  * **🔒 Concurrency:** Introduce multi-threaded access using mutexes for thread safety.
+  * **🤝 Transactions:** Support atomic multi-command execution.
+  * **💾 Persistence:** Implement snapshot-based (RDB) and append-only file (AOF) persistence.
+  * **🌐 Network Server Mode:** Build a simple TCP server to enable remote client connections (a mini-Redis clone).
+
+-----
 
 ## 🤝 Contributing
 
-Contributions are welcome! To contribute:
+Contributions are highly appreciated\! Please follow these steps to contribute:
 
-1. Fork the repository
-2. Create a feature branch
-3. Implement your change
-4. Submit a pull request
+1.  **Fork** the repository.
+2.  Create a descriptive feature branch (`git checkout -b feat/add-ttl`).
+3.  Implement your changes and ensure tests pass (if any).
+4.  Submit a **Pull Request** explaining your contribution.
 
----
+-----
 
 ## 📄 License
 
-Add your preferred license here (MIT, Apache 2.0, etc.)
+\[Add your preferred license here, e.g., **MIT License**]
 
----
+-----
 
 ## 🙌 Acknowledgments
 
-Inspired by common in-memory cache systems and modular C++ design patterns.
+Inspired by the internal designs of common high-performance in-memory cache systems and the pursuit of clean, modular C++ development.
+
+```
+```
