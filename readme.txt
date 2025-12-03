@@ -1,4 +1,3 @@
-This is a well-structured project description\! Here is the content formatted into a professional, clear, and scannable `README.md` using standard Markdown conventions and appropriate emojis.
 
 ```markdown
 # 🚀 In-Memory Cache DB (C++)
