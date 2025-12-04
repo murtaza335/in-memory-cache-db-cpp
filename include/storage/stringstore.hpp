@@ -2,8 +2,8 @@
 #define STRINGSTORE_HPP
 
 #include <string>
-#include "../RedisHashMap.hpp" // include your base hashmap
-#include "../RedisObject.hpp"
+#include "storage/RedisHashMap.hpp" // include your base hashmap
+#include "storage/RedisObject.hpp"
 
 namespace stringstore {
     std::string set(const std::string& key, const std::string& value);

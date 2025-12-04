@@ -1,4 +1,4 @@
-#include "stringstore.hpp"
+#include "storage/stringstore.hpp"
 
 // Single global RedisHashMap instance for stringstore
 static RedisHashMap baseMap(1024); // 1024 buckets, you can adjust
