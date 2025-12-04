@@ -15,7 +15,10 @@ add_executable(main
     src/storage/murmurhash/murmurhash3.cpp
     src/storage/liststore.cpp
     src/storage/stringstore.cpp
+    src/storage/RedisHashMap.cpp
+    src/storage/RedisObject.cpp
     src/server/server.cpp
+    src
 )
 
 if (WIN32)

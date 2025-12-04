@@ -176,6 +176,54 @@ src/server/server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/server/server.cpp.s
 .PHONY : src/server/server.cpp.s
 
+src/storage/RedisHashMap.obj: src/storage/RedisHashMap.cpp.obj
+.PHONY : src/storage/RedisHashMap.obj
+
+# target to build an object file
+src/storage/RedisHashMap.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisHashMap.cpp.obj
+.PHONY : src/storage/RedisHashMap.cpp.obj
+
+src/storage/RedisHashMap.i: src/storage/RedisHashMap.cpp.i
+.PHONY : src/storage/RedisHashMap.i
+
+# target to preprocess a source file
+src/storage/RedisHashMap.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisHashMap.cpp.i
+.PHONY : src/storage/RedisHashMap.cpp.i
+
+src/storage/RedisHashMap.s: src/storage/RedisHashMap.cpp.s
+.PHONY : src/storage/RedisHashMap.s
+
+# target to generate assembly for a file
+src/storage/RedisHashMap.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisHashMap.cpp.s
+.PHONY : src/storage/RedisHashMap.cpp.s
+
+src/storage/RedisObject.obj: src/storage/RedisObject.cpp.obj
+.PHONY : src/storage/RedisObject.obj
+
+# target to build an object file
+src/storage/RedisObject.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisObject.cpp.obj
+.PHONY : src/storage/RedisObject.cpp.obj
+
+src/storage/RedisObject.i: src/storage/RedisObject.cpp.i
+.PHONY : src/storage/RedisObject.i
+
+# target to preprocess a source file
+src/storage/RedisObject.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisObject.cpp.i
+.PHONY : src/storage/RedisObject.cpp.i
+
+src/storage/RedisObject.s: src/storage/RedisObject.cpp.s
+.PHONY : src/storage/RedisObject.s
+
+# target to generate assembly for a file
+src/storage/RedisObject.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisObject.cpp.s
+.PHONY : src/storage/RedisObject.cpp.s
+
 src/storage/liststore.obj: src/storage/liststore.cpp.obj
 .PHONY : src/storage/liststore.obj
 
@@ -263,6 +311,12 @@ help:
 	@echo ... src/server/server.obj
 	@echo ... src/server/server.i
 	@echo ... src/server/server.s
+	@echo ... src/storage/RedisHashMap.obj
+	@echo ... src/storage/RedisHashMap.i
+	@echo ... src/storage/RedisHashMap.s
+	@echo ... src/storage/RedisObject.obj
+	@echo ... src/storage/RedisObject.i
+	@echo ... src/storage/RedisObject.s
 	@echo ... src/storage/liststore.obj
 	@echo ... src/storage/liststore.i
 	@echo ... src/storage/liststore.s

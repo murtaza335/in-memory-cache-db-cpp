@@ -1,4 +1,4 @@
-#include "RedisObject.hpp"
+#include "storage/RedisObject.hpp"
 
 // ---------- Constructors ----------
 

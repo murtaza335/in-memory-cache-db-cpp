@@ -25,6 +25,18 @@
 },
 {
   "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++17 -o CMakeFiles\\main.dir\\src\\storage\\RedisHashMap.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\storage\\RedisHashMap.cpp\"",
+  "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/storage/RedisHashMap.cpp",
+  "output": "CMakeFiles/main.dir/src/storage/RedisHashMap.cpp.obj"
+},
+{
+  "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++17 -o CMakeFiles\\main.dir\\src\\storage\\RedisObject.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\storage\\RedisObject.cpp\"",
+  "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/storage/RedisObject.cpp",
+  "output": "CMakeFiles/main.dir/src/storage/RedisObject.cpp.obj"
+},
+{
+  "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
   "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++17 -o CMakeFiles\\main.dir\\src\\server\\server.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\server\\server.cpp\"",
   "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/server/server.cpp",
   "output": "CMakeFiles/main.dir/src/server/server.cpp.obj"
