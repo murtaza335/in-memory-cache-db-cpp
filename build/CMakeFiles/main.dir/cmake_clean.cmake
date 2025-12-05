@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/main.dir/src/main.cpp.obj"
   "CMakeFiles/main.dir/src/main.cpp.obj.d"
+  "CMakeFiles/main.dir/src/parser/parser.cpp.obj"
+  "CMakeFiles/main.dir/src/parser/parser.cpp.obj.d"
   "CMakeFiles/main.dir/src/server/server.cpp.obj"
   "CMakeFiles/main.dir/src/server/server.cpp.obj.d"
   "CMakeFiles/main.dir/src/storage/RedisHashMap.cpp.obj"

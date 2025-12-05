@@ -152,6 +152,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/parser/parser.obj: src/parser/parser.cpp.obj
+.PHONY : src/parser/parser.obj
+
+# target to build an object file
+src/parser/parser.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/parser/parser.cpp.obj
+.PHONY : src/parser/parser.cpp.obj
+
+src/parser/parser.i: src/parser/parser.cpp.i
+.PHONY : src/parser/parser.i
+
+# target to preprocess a source file
+src/parser/parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/parser/parser.cpp.i
+.PHONY : src/parser/parser.cpp.i
+
+src/parser/parser.s: src/parser/parser.cpp.s
+.PHONY : src/parser/parser.s
+
+# target to generate assembly for a file
+src/parser/parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/parser/parser.cpp.s
+.PHONY : src/parser/parser.cpp.s
+
 src/server/server.obj: src/server/server.cpp.obj
 .PHONY : src/server/server.obj
 
@@ -308,6 +332,9 @@ help:
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s
+	@echo ... src/parser/parser.obj
+	@echo ... src/parser/parser.i
+	@echo ... src/parser/parser.s
 	@echo ... src/server/server.obj
 	@echo ... src/server/server.i
 	@echo ... src/server/server.s

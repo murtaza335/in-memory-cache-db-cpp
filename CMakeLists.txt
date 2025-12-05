@@ -18,7 +18,7 @@ add_executable(main
     src/storage/RedisHashMap.cpp
     src/storage/RedisObject.cpp
     src/server/server.cpp
-    src
+    src/parser/parser.cpp
 )
 
 if (WIN32)

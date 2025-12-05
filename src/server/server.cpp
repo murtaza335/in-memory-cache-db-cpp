@@ -1,4 +1,5 @@
 #include "server/server.hpp"
+#include "parser/parser.hpp"
 #include <iostream>
 
 struct ClientParam {
@@ -107,6 +108,10 @@ void TcpServer::handleClient(SOCKET clientSocket) {
 
         std::string received(buffer, bytesRecv);
 
+        // here we call the parser to process the received data
+        Parser parser;
+        std::string response = parser.route(received);
+        send(clientSocket, response.c_str(), (int)response.size(), 0);
         // ---------------------------------------------------------------------
         // 🔵 HOOK: CALL YOUR PARSER HERE
         //
@@ -117,8 +122,8 @@ void TcpServer::handleClient(SOCKET clientSocket) {
         // For now, just echo:
         // ---------------------------------------------------------------------
 
-        std::string echo = "ECHO: " + received;
-        send(clientSocket, echo.c_str(), (int)echo.size(), 0);
+        // std::string echo = "ECHO: " + received;
+        // send(clientSocket, echo.c_str(), (int)echo.size(), 0);
     }
 
     closesocket(clientSocket);

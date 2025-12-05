@@ -40,5 +40,11 @@
   "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++17 -o CMakeFiles\\main.dir\\src\\server\\server.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\server\\server.cpp\"",
   "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/server/server.cpp",
   "output": "CMakeFiles/main.dir/src/server/server.cpp.obj"
+},
+{
+  "directory": "E:/NUST/PROJECTS/SEM 3/dsa/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++17 -o CMakeFiles\\main.dir\\src\\parser\\parser.cpp.obj -c \"E:\\NUST\\PROJECTS\\SEM 3\\dsa\\src\\parser\\parser.cpp\"",
+  "file": "E:/NUST/PROJECTS/SEM 3/dsa/src/parser/parser.cpp",
+  "output": "CMakeFiles/main.dir/src/parser/parser.cpp.obj"
 }
 ]

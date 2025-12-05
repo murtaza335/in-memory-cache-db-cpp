@@ -1,6 +1,6 @@
-#include "Parser.hpp"
-#include "StringStore.hpp"
-#include "ListStore.hpp"
+#include "parser/parser.hpp"
+#include "storage/stringstore.hpp"
+#include "storage/liststore.hpp"
 #include <sstream>
 #include <algorithm>
 #include <vector>
