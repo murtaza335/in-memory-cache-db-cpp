@@ -1,9 +1,13 @@
 #include "parser/parser.hpp"
 #include "storage/stringstore.hpp"
 #include "storage/liststore.hpp"
+
 #include <sstream>
 #include <algorithm>
-#include <vector>
+
+// Constructor (dependency injection)
+Parser::Parser(RedisHashMap& map)
+    : baseMap(map) {}
 
 // --------------------------------------------------------
 // TOKENIZER — splits input into tokens by spaces
@@ -18,13 +22,13 @@ std::vector<std::string> Parser::tokenize(const std::string& input) {
 }
 
 // --------------------------------------------------------
-// PUBLIC ENTRY POINT — call THIS from your server
+// PUBLIC ENTRY POINT — called from your server
 // --------------------------------------------------------
 std::string Parser::route(const std::string& rawInput) {
     if (rawInput.empty())
-        return "ERROR: Empty request";
+        return "-ERR empty request";
 
-    // Remove \r or \n at end (from TCP)
+    // Cleanup TCP newlines
     std::string clean = rawInput;
     clean.erase(std::remove(clean.begin(), clean.end(), '\r'), clean.end());
     clean.erase(std::remove(clean.begin(), clean.end(), '\n'), clean.end());
@@ -32,75 +36,76 @@ std::string Parser::route(const std::string& rawInput) {
     auto tokens = tokenize(clean);
 
     if (tokens.empty())
-        return "ERROR: Empty command";
+        return "-ERR empty command";
 
     return processCommand(tokens);
 }
 
 // --------------------------------------------------------
-// INTERNAL: process parsed tokens and route to correct store
+// INTERNAL: Command router
 // --------------------------------------------------------
 std::string Parser::processCommand(const std::vector<std::string>& tokens) {
     std::string cmd = tokens[0];
     std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
 
-    // -----------------------------------
-    // STRING STORE COMMANDS
-    // -----------------------------------
+    // ----------------------------------------------------
+    // STRING COMMANDS
+    // ----------------------------------------------------
     if (cmd == "SET") {
-        if (tokens.size() < 3)
-            return "ERROR: SET requires key and value";
-
-        return stringstore::set(tokens[1], tokens[2]);
+        if (tokens.size() < 3) return "-ERR SET requires key and value";
+        return stringstore::set(baseMap, tokens[1], tokens[2]);
     }
 
     if (cmd == "GET") {
-        if (tokens.size() < 2)
-            return "ERROR: GET requires key";
-
-        return stringstore::get(tokens[1]);
+        if (tokens.size() < 2) return "-ERR GET requires key";
+        return stringstore::get(baseMap, tokens[1]);
     }
 
     if (cmd == "DEL") {
-        if (tokens.size() < 2)
-            return "ERROR: DEL requires key";
-
-        return stringstore::del(tokens[1]);
+        if (tokens.size() < 2) return "-ERR DEL requires key";
+        return stringstore::del(baseMap, tokens[1]);
     }
 
-    // -----------------------------------
-    // LIST STORE COMMANDS
-    // -----------------------------------
-    if (cmd == "LPUSH") {
-        if (tokens.size() < 3)
-            return "ERROR: LPUSH requires key and value";
+    if (cmd == "EXISTS") {
+        if (tokens.size() < 2) return "-ERR EXISTS requires key";
+        return stringstore::exists(baseMap, tokens[1]);
+    }
 
-        return liststore::lpush(tokens[1], tokens[2]);
+    if (cmd == "RENAME") {
+        if (tokens.size() < 3) return "-ERR RENAME requires oldKey newKey";
+        return stringstore::rename(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "COPY") {
+        if (tokens.size() < 3) return "-ERR COPY requires sourceKey destKey";
+        return stringstore::copy(baseMap, tokens[1], tokens[2]);
+    }
+
+    // ----------------------------------------------------
+    // LIST COMMANDS
+    // ----------------------------------------------------
+    if (cmd == "LPUSH") {
+        if (tokens.size() < 3) return "-ERR LPUSH requires key and value";
+        return liststore::lpush(baseMap, tokens[1], tokens[2]);
     }
 
     if (cmd == "RPUSH") {
-        if (tokens.size() < 3)
-            return "ERROR: RPUSH requires key and value";
-
-        return liststore::rpush(tokens[1], tokens[2]);
+        if (tokens.size() < 3) return "-ERR RPUSH requires key and value";
+        return liststore::rpush(baseMap, tokens[1], tokens[2]);
     }
 
     if (cmd == "LPOP") {
-        if (tokens.size() < 2)
-            return "ERROR: LPOP requires key";
-
-        return liststore::lpop(tokens[1]);
+        if (tokens.size() < 2) return "-ERR LPOP requires key";
+        return liststore::lpop(baseMap, tokens[1]);
     }
 
     if (cmd == "RPOP") {
-        if (tokens.size() < 2)
-            return "ERROR: RPOP requires key";
-
-        return liststore::rpop(tokens[1]);
+        if (tokens.size() < 2) return "-ERR RPOP requires key";
+        return liststore::rpop(baseMap, tokens[1]);
     }
 
-    // -----------------------------------
+    // ----------------------------------------------------
     // UNKNOWN COMMAND
-    // -----------------------------------
-    return "ERROR: Unknown command";
+    // ----------------------------------------------------
+    return "-ERR unknown command";
 }

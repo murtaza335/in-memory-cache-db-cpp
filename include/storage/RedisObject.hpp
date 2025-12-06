@@ -46,7 +46,7 @@ public:
 
     // ---------- getValue ----------
     template<typename T>
-    T getValue() const {
+    T& getValue() const {
         return *static_cast<T*>(ptr);
     }
 

@@ -200,6 +200,30 @@ src/server/server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/server/server.cpp.s
 .PHONY : src/server/server.cpp.s
 
+src/storage/RedisDictionaryHashMap.obj: src/storage/RedisDictionaryHashMap.cpp.obj
+.PHONY : src/storage/RedisDictionaryHashMap.obj
+
+# target to build an object file
+src/storage/RedisDictionaryHashMap.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisDictionaryHashMap.cpp.obj
+.PHONY : src/storage/RedisDictionaryHashMap.cpp.obj
+
+src/storage/RedisDictionaryHashMap.i: src/storage/RedisDictionaryHashMap.cpp.i
+.PHONY : src/storage/RedisDictionaryHashMap.i
+
+# target to preprocess a source file
+src/storage/RedisDictionaryHashMap.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisDictionaryHashMap.cpp.i
+.PHONY : src/storage/RedisDictionaryHashMap.cpp.i
+
+src/storage/RedisDictionaryHashMap.s: src/storage/RedisDictionaryHashMap.cpp.s
+.PHONY : src/storage/RedisDictionaryHashMap.s
+
+# target to generate assembly for a file
+src/storage/RedisDictionaryHashMap.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisDictionaryHashMap.cpp.s
+.PHONY : src/storage/RedisDictionaryHashMap.cpp.s
+
 src/storage/RedisHashMap.obj: src/storage/RedisHashMap.cpp.obj
 .PHONY : src/storage/RedisHashMap.obj
 
@@ -247,6 +271,30 @@ src/storage/RedisObject.s: src/storage/RedisObject.cpp.s
 src/storage/RedisObject.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisObject.cpp.s
 .PHONY : src/storage/RedisObject.cpp.s
+
+src/storage/RedisSets.obj: src/storage/RedisSets.cpp.obj
+.PHONY : src/storage/RedisSets.obj
+
+# target to build an object file
+src/storage/RedisSets.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisSets.cpp.obj
+.PHONY : src/storage/RedisSets.cpp.obj
+
+src/storage/RedisSets.i: src/storage/RedisSets.cpp.i
+.PHONY : src/storage/RedisSets.i
+
+# target to preprocess a source file
+src/storage/RedisSets.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisSets.cpp.i
+.PHONY : src/storage/RedisSets.cpp.i
+
+src/storage/RedisSets.s: src/storage/RedisSets.cpp.s
+.PHONY : src/storage/RedisSets.s
+
+# target to generate assembly for a file
+src/storage/RedisSets.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/storage/RedisSets.cpp.s
+.PHONY : src/storage/RedisSets.cpp.s
 
 src/storage/liststore.obj: src/storage/liststore.cpp.obj
 .PHONY : src/storage/liststore.obj
@@ -338,12 +386,18 @@ help:
 	@echo ... src/server/server.obj
 	@echo ... src/server/server.i
 	@echo ... src/server/server.s
+	@echo ... src/storage/RedisDictionaryHashMap.obj
+	@echo ... src/storage/RedisDictionaryHashMap.i
+	@echo ... src/storage/RedisDictionaryHashMap.s
 	@echo ... src/storage/RedisHashMap.obj
 	@echo ... src/storage/RedisHashMap.i
 	@echo ... src/storage/RedisHashMap.s
 	@echo ... src/storage/RedisObject.obj
 	@echo ... src/storage/RedisObject.i
 	@echo ... src/storage/RedisObject.s
+	@echo ... src/storage/RedisSets.obj
+	@echo ... src/storage/RedisSets.i
+	@echo ... src/storage/RedisSets.s
 	@echo ... src/storage/liststore.obj
 	@echo ... src/storage/liststore.i
 	@echo ... src/storage/liststore.s

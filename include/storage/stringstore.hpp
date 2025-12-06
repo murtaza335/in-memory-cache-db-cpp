@@ -2,16 +2,18 @@
 #define STRINGSTORE_HPP
 
 #include <string>
-#include "storage/RedisHashMap.hpp" // include your base hashmap
+#include "storage/RedisHashMap.hpp"
 #include "storage/RedisObject.hpp"
 
 namespace stringstore {
-    std::string set(const std::string& key, const std::string& value);
-    std::string get(const std::string& key);
-    std::string del(const std::string& key);
-    std::string exists(const std::string& key);
-    std::string rename(const std::string& oldKey, const std::string& newKey);
-    std::string copy(const std::string& sourceKey, const std::string& destKey);
+
+    std::string set(RedisHashMap& db, const std::string& key, const std::string& value);
+    std::string get(RedisHashMap& db, const std::string& key);
+    std::string del(RedisHashMap& db, const std::string& key);
+    std::string exists(RedisHashMap& db, const std::string& key);
+    std::string rename(RedisHashMap& db, const std::string& oldKey, const std::string& newKey);
+    std::string copy(RedisHashMap& db, const std::string& sourceKey, const std::string& destKey);
+
 }
 
 #endif // STRINGSTORE_HPP

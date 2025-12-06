@@ -7,8 +7,9 @@ struct ClientParam {
     SOCKET clientSocket;
 };
 
-TcpServer::TcpServer(int port)
-    : port(port), serverSocket(INVALID_SOCKET), running(false) {
+TcpServer::TcpServer(int port, Parser& p)
+    : port(port), serverSocket(INVALID_SOCKET), running(false), parser(p) 
+{
     InitializeCriticalSection(&cs);
 }
 
@@ -112,18 +113,7 @@ void TcpServer::handleClient(SOCKET clientSocket) {
         
         std::string response = parser.route(received);
         send(clientSocket, response.c_str(), (int)response.size(), 0);
-        // ---------------------------------------------------------------------
-        // 🔵 HOOK: CALL YOUR PARSER HERE
-        //
-        // Example:
-        //     std::string response = parser.process(received);
-        //     send(clientSocket, response.c_str(), response.size(), 0);
-        //
-        // For now, just echo:
-        // ---------------------------------------------------------------------
-
-        // std::string echo = "ECHO: " + received;
-        // send(clientSocket, echo.c_str(), (int)echo.size(), 0);
+        
     }
 
     closesocket(clientSocket);

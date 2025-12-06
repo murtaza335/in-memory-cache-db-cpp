@@ -1,41 +1,35 @@
 #include "storage/stringstore.hpp"
-
-// Single global RedisHashMap instance for stringstore
-static RedisHashMap baseMap(1024); // 1024 buckets, you can adjust
+#include <iostream>
 
 namespace stringstore {
 
-std::string set(const std::string& key, const std::string& value) {
-    RedisObject obj(value);        // wrap value in RedisObject
-    baseMap.add(key, obj);
-    std::cout<<"adding inside string store"<<std::endl;
+std::string set(RedisHashMap& db, const std::string& key, const std::string& value) {
+    RedisObject obj(value);        
+    db.add(key, obj);
     return "+OK";
 }
 
-std::string get(const std::string& key) {
-    RedisObject* obj = baseMap.get(key);
-    if (!obj) return "$-1";       // Redis-style nil
+std::string get(RedisHashMap& db, const std::string& key) {
+    RedisObject* obj = db.get(key);
+    if (!obj) return "$-1";
     if (obj->getType() != RedisType::STRING) return "-ERR wrong type";
     return obj->getValue<std::string>();
 }
 
-std::string del(const std::string& key) {
-    if (baseMap.del(key)) return ":1";  // 1 key deleted
-    return ":0";                        // key not found
+std::string del(RedisHashMap& db, const std::string& key) {
+    return db.del(key) ? ":1" : ":0";
 }
 
-std::string exists(const std::string& key) {
-    return baseMap.exists(key) ? ":1" : ":0";
+std::string exists(RedisHashMap& db, const std::string& key) {
+    return db.exists(key) ? ":1" : ":0";
 }
 
-std::string rename(const std::string& oldKey, const std::string& newKey) {
-    if (baseMap.rename(oldKey, newKey)) return "+OK";
-    return "-ERR key does not exist";
+std::string rename(RedisHashMap& db, const std::string& oldKey, const std::string& newKey) {
+    return db.rename(oldKey, newKey) ? "+OK" : "-ERR key does not exist";
 }
 
-std::string copy(const std::string& sourceKey, const std::string& destKey) {
-    if (baseMap.copy(sourceKey, destKey)) return "+OK";
-    return "-ERR source key does not exist";
+std::string copy(RedisHashMap& db, const std::string& sourceKey, const std::string& destKey) {
+    return db.copy(sourceKey, destKey) ? "+OK" : "-ERR source key does not exist";
 }
 
 } // namespace stringstore

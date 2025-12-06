@@ -1,0 +1,20 @@
+[ main.cpp ]
+    |
+    | creates
+    v
+RedisHashMap baseMap  <--- shared storage for all clients
+    |
+    | injected into
+    v
+Parser parser(baseMap)
+    |
+    | injected into
+    v
+TcpServer server(parser)
+    |
+    | handles clients and calls
+    v
+parser.route()
+    |
+    v
+stringstore::set/get/etc. (using same baseMap)

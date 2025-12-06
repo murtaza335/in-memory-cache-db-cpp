@@ -93,6 +93,7 @@ bool RedisHashMap::copy(const std::string& sourceKey, const std::string& destKey
 
 // -------------------- Get --------------------
 RedisObject* RedisHashMap::get(const std::string& key) {
+    std::cout<<"get inside base hashmap"<<std::endl;
     size_t idx = getIndex(key);
     auto& bucket = buckets[idx];
 

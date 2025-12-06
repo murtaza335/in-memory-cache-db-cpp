@@ -5,12 +5,13 @@
 #include <ws2tcpip.h>
 #include <windows.h>
 #include <string>
+#include "parser/parser.hpp"
 
 #pragma comment(lib, "ws2_32.lib")
 
 class TcpServer {
 public:
-    TcpServer(int port);
+    TcpServer(int port, Parser& parser);   // constructor updated
     ~TcpServer();
 
     bool start();
@@ -19,7 +20,7 @@ public:
 private:
     static DWORD WINAPI clientThread(LPVOID param);
     void handleClient(SOCKET clientSocket);
-
+    Parser& parser;   // dependency injection
 private:
     int port;
     SOCKET serverSocket;
