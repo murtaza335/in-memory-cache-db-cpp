@@ -1,4 +1,5 @@
 #include "storage/RedisObject.hpp"
+#include "storage/LinkedList.hpp"
 
 // ---------- Constructors ----------
 
@@ -15,6 +16,11 @@ RedisObject::RedisObject(const std::string& value) {
 RedisObject::RedisObject(bool value) {
     type = RedisType::BOOL;
     ptr = new bool(value);
+}
+
+RedisObject::RedisObject(LinkedList* list) {
+    type = RedisType::LIST;
+    ptr = list;
 }
 
 RedisObject::RedisObject(const std::vector<RedisObject>& value) {
@@ -60,6 +66,7 @@ RedisObject::~RedisObject() {
 RedisType RedisObject::getType() const {
     return type;
 }
+
 
 // ---------- Equality ----------
 bool RedisObject::operator==(const RedisObject& other) const {

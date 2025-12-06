@@ -21,6 +21,7 @@ add_executable(main
     src/parser/parser.cpp
     src/storage/RedisDictionaryHashMap.cpp
     src/storage/RedisSets.cpp
+    src/storage/LinkedList.cpp
 )
 
 if (WIN32)
