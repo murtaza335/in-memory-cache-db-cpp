@@ -109,7 +109,7 @@ void TcpServer::handleClient(SOCKET clientSocket) {
         std::string received(buffer, bytesRecv);
 
         // here we call the parser to process the received data
-        Parser parser;
+        
         std::string response = parser.route(received);
         send(clientSocket, response.c_str(), (int)response.size(), 0);
         // ---------------------------------------------------------------------

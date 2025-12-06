@@ -15,6 +15,7 @@ size_t RedisHashMap::getIndex(const std::string& key) const {
 
 // -------------------- Add/Insert --------------------
 bool RedisHashMap::add(const std::string& key, const RedisObject& value) {
+    std::cout<<"adding key inside redis base hashmap";
     size_t idx = getIndex(key);
     auto& bucket = buckets[idx];
 

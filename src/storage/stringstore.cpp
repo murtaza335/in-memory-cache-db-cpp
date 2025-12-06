@@ -8,6 +8,7 @@ namespace stringstore {
 std::string set(const std::string& key, const std::string& value) {
     RedisObject obj(value);        // wrap value in RedisObject
     baseMap.add(key, obj);
+    std::cout<<"adding inside string store"<<std::endl;
     return "+OK";
 }
 
