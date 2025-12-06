@@ -1,3 +1,0 @@
-E:/NUST/PROJECTS/SEM 3/dsa/build/CMakeFiles/main.dir
-E:/NUST/PROJECTS/SEM 3/dsa/build/CMakeFiles/edit_cache.dir
-E:/NUST/PROJECTS/SEM 3/dsa/build/CMakeFiles/rebuild_cache.dir
