@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include "storage/LinkedList.hpp"
 
 // Forward declaration for recursive types
 class RedisObject;
@@ -34,6 +35,7 @@ public:
     RedisObject(int value);
     RedisObject(const std::string& value);
     RedisObject(bool value);
+    RedisObject(LinkedList* list);
     RedisObject(const std::vector<RedisObject>& value);
     RedisObject(const std::unordered_map<std::string, RedisObject>& value);
     RedisObject(const std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>& value);
@@ -48,6 +50,11 @@ public:
     template<typename T>
     T& getValue() const {
         return *static_cast<T*>(ptr);
+    }
+
+        // ---------- Pointer Getter ----------
+    void* getPtr() const {
+        return ptr;
     }
 
     // ---------- Equality operator ----------

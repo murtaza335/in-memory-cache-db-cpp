@@ -1,83 +1,121 @@
 #include "storage/liststore.hpp"
 #include "storage/RedisObject.hpp"
+#include "storage/LinkedList.hpp"
 #include <vector>
 #include <string>
+#include <sstream>
 
 namespace liststore {
 
-// ---------------------- Helper: fetch or create list ----------------------
-static std::vector<RedisObject>& getList(RedisHashMap& map, const std::string& key) {
+// -------------------- LPUSH --------------------
+std::string lpush(RedisHashMap& map, const std::string& key, const std::string& value) {
     RedisObject* obj = map.get(key);
+    LinkedList* list;
 
-    // Create new list if missing or wrong type
-    if (!obj || obj->getType() != RedisType::LIST) {
-
-        // Create empty list
-        std::vector<RedisObject> newList;
-        map.add(key, RedisObject(newList));
-
-        obj = map.get(key);
+    if (!obj) {
+        list = new LinkedList();
+        map.add(key, RedisObject(list));
+    } else {
+        if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+        list = static_cast<LinkedList*>(obj->getPtr());
     }
 
-    // Convert stored pointer to vector<RedisObject>&
-    return obj->getValue<std::vector<RedisObject>>();
+    list->push_front(value);
+    return ":" + std::to_string(list->size);
 }
 
-// ---------------------- Commands ----------------------
-
-std::string lpush(RedisHashMap& map, const std::string& key, const std::string& value) {
-    auto& list = getList(map, key);
-
-    // insert new RedisObject element at front
-    list.insert(list.begin(), RedisObject(value));
-
-    return ":" + std::to_string(list.size());
-}
-
+// -------------------- RPUSH --------------------
 std::string rpush(RedisHashMap& map, const std::string& key, const std::string& value) {
-    auto& list = getList(map, key);
+    RedisObject* obj = map.get(key);
+    LinkedList* list;
 
-    // append new RedisObject element
-    list.push_back(RedisObject(value));
+    if (!obj) {
+        list = new LinkedList();
+        map.add(key, RedisObject(list));
+    } else {
+        if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+        list = static_cast<LinkedList*>(obj->getPtr());
+    }
 
-    return ":" + std::to_string(list.size());
+    list->push_back(value);
+    return ":" + std::to_string(list->size);
 }
 
+// -------------------- LPOP --------------------
 std::string lpop(RedisHashMap& map, const std::string& key) {
-    auto& list = getList(map, key);
+    RedisObject* obj = map.get(key);
+    if (!obj) return "$-1";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
 
-    if (list.empty())
-        return "$-1";
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+    if (list->empty()) return "$-1";
 
-    // first element as RedisObject
-    RedisObject& obj = list.front();
-
-    // extract as string
-    if (obj.getType() != RedisType::STRING)
-        return "-ERR wrong type (expected STRING element)";
-
-    std::string val = obj.getValue<std::string>();
-
-    list.erase(list.begin());
+    std::string val = list->pop_front();
     return val;
 }
 
+// -------------------- RPOP --------------------
 std::string rpop(RedisHashMap& map, const std::string& key) {
-    auto& list = getList(map, key);
+    RedisObject* obj = map.get(key);
+    if (!obj) return "$-1";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
 
-    if (list.empty())
-        return "$-1";
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+    if (list->empty()) return "$-1";
 
-    // last element
-    RedisObject& obj = list.back();
-
-    if (obj.getType() != RedisType::STRING)
-        return "-ERR wrong type (expected STRING element)";
-
-    std::string val = obj.getValue<std::string>();
-
-    list.pop_back();
+    std::string val = list->pop_back();
     return val;
+}
+
+// -------------------- LLEN --------------------
+std::string llen(RedisHashMap& map, const std::string& key) {
+    RedisObject* obj = map.get(key);
+    if (!obj) return ":0";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+    return ":" + std::to_string(list->size);
+}
+
+// -------------------- LINDEX --------------------
+std::string lindex(RedisHashMap& map, const std::string& key, const std::string& indexStr) {
+    RedisObject* obj = map.get(key);
+    if (!obj) return "$-1";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+    long long idx;
+    try { idx = std::stoll(indexStr); } 
+    catch (...) { return "-ERR invalid index"; }
+
+    try {
+        std::string val = list->get(idx);
+        return val;
+    } catch (...) {
+        return "$-1";
+    }
+}
+
+// -------------------- LSET --------------------
+std::string lset(RedisHashMap& map, const std::string& key, const std::string& indexStr, const std::string& value) {
+    RedisObject* obj = map.get(key);
+    if (!obj) return "-ERR no such key";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+    if (!list) return "-ERR internal error: list pointer null";
+
+    long long idx;
+    try { idx = std::stoll(indexStr); } 
+    catch (...) { return "-ERR invalid index"; }
+
+    long long sz = static_cast<long long>(list->size);
+    if (idx < 0) idx += sz;
+
+    if (idx < 0 || idx >= sz) return "-ERR index out of range";
+
+    list->set(idx, value);
+    return "+OK";
 }
 
 } // namespace liststore
