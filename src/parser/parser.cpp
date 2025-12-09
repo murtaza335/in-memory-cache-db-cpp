@@ -1,6 +1,10 @@
 #include "parser/parser.hpp"
 #include "storage/stringstore.hpp"
 #include "storage/liststore.hpp"
+#include "storage/RedisSets.hpp"
+#include "storage/RedisDictionaryHashMap.hpp"
+#include "storage/RedisObject.hpp"
+
 
 #include <sstream>
 #include <algorithm>
@@ -163,6 +167,59 @@ std::string Parser::processCommand(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2) return "-ERR LPRINT requires list";
     return liststore::lprint(baseMap, tokens[1]);
     }
+
+        // ---------------- SET COMMANDS ----------------
+    if (cmd == "SADD") {
+        if (tokens.size() < 3) return "-ERR SADD requires key value";
+        return setstore::sadd(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "SREM") {
+        if (tokens.size() < 3) return "-ERR SREM requires key value";
+        return setstore::srem(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "SISMEMBER") {
+        if (tokens.size() < 3) return "-ERR SISMEMBER requires key value";
+        return setstore::sismember(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "SCARD") {
+        if (tokens.size() < 2) return "-ERR SCARD requires key";
+        return setstore::scard(baseMap, tokens[1]);
+    }
+
+    if (cmd == "SMEMBERS") {
+        if (tokens.size() < 2) return "-ERR SMEMBERS requires key";
+        return setstore::smembers(baseMap, tokens[1]);
+    }
+
+    // ---------------- HASHMAP / DICTIONARY COMMANDS ----------------
+    if (cmd == "HSET") {
+        if (tokens.size() < 4) return "-ERR HSET requires key field value";
+        return hashmapstore::hset(baseMap, tokens[1], tokens[2], tokens[3]);
+    }
+
+    if (cmd == "HGET") {
+        if (tokens.size() < 3) return "-ERR HGET requires key field";
+        return hashmapstore::hget(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "HDEL") {
+        if (tokens.size() < 3) return "-ERR HDEL requires key field";
+        return hashmapstore::hdel(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "HEXISTS") {
+        if (tokens.size() < 3) return "-ERR HEXISTS requires key field";
+        return hashmapstore::hexists(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "HLEN") {
+        if (tokens.size() < 2) return "-ERR HLEN requires key";
+        return hashmapstore::hlen(baseMap, tokens[1]);
+    }
+
 
     // ---------------- UNKNOWN ----------------
     return "-ERR unknown command";
