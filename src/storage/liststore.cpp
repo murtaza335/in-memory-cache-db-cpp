@@ -14,15 +14,19 @@ std::string lpush(RedisHashMap& map, const std::string& key, const std::string& 
 
     if (!obj) {
         list = new LinkedList();
-        map.add(key, RedisObject(list));
-    } else {
-        if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
-        list = static_cast<LinkedList*>(obj->getPtr());
+        list->push_front(value);          
+        map.add(key, RedisObject(list)); 
+        return ":1";
     }
 
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    list = static_cast<LinkedList*>(obj->getPtr());
     list->push_front(value);
+
     return ":" + std::to_string(list->size);
 }
+
 
 // -------------------- RPUSH --------------------
 std::string rpush(RedisHashMap& map, const std::string& key, const std::string& value) {
@@ -31,15 +35,19 @@ std::string rpush(RedisHashMap& map, const std::string& key, const std::string& 
 
     if (!obj) {
         list = new LinkedList();
-        map.add(key, RedisObject(list));
-    } else {
-        if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
-        list = static_cast<LinkedList*>(obj->getPtr());
+        list->push_back(value);            
+        map.add(key, RedisObject(list));  
+        return ":1";
     }
 
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    list = static_cast<LinkedList*>(obj->getPtr());
     list->push_back(value);
+
     return ":" + std::to_string(list->size);
 }
+
 
 // -------------------- LPOP --------------------
 std::string lpop(RedisHashMap& map, const std::string& key) {

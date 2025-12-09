@@ -152,3 +152,15 @@ void LinkedList::sort(bool ascending) {
     while (tail && tail->next)
         tail = tail->next;
 }
+
+
+// ---------- Clone (deep copy) ----------
+LinkedList* LinkedList::clone() const {
+    LinkedList* copy = new LinkedList();
+    ListNode* curr = head;
+    while (curr) {
+        copy->push_back(curr->value);
+        curr = curr->next;
+    }
+    return copy;
+}

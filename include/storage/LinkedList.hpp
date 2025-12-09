@@ -41,6 +41,9 @@ public:
 
     // Helpers
     bool empty() const { return size == 0; }
+
+    // Clone (deep copy) helper
+    LinkedList* clone() const;
 };
 
 #endif // LINKEDLIST_HPP
