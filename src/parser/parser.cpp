@@ -154,6 +154,16 @@ std::string Parser::processCommand(const std::vector<std::string>& tokens) {
         return liststore::lset(baseMap, tokens[1], tokens[2], tokens[3]);
     }
 
+    if (cmd == "LSORT") {
+    if (tokens.size() < 3) return "-ERR LSORT requires list and order";
+    return liststore::lsort(baseMap, tokens[1], tokens[2]);
+    }   
+
+    if (cmd == "LPRINT") {
+    if (tokens.size() < 2) return "-ERR LPRINT requires list";
+    return liststore::lprint(baseMap, tokens[1]);
+    }
+
     // ---------------- UNKNOWN ----------------
     return "-ERR unknown command";
 }

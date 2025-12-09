@@ -14,15 +14,19 @@ std::string lpush(RedisHashMap& map, const std::string& key, const std::string& 
 
     if (!obj) {
         list = new LinkedList();
-        map.add(key, RedisObject(list));
-    } else {
-        if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
-        list = static_cast<LinkedList*>(obj->getPtr());
+        list->push_front(value);          
+        map.add(key, RedisObject(list)); 
+        return ":1";
     }
 
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    list = static_cast<LinkedList*>(obj->getPtr());
     list->push_front(value);
+
     return ":" + std::to_string(list->size);
 }
+
 
 // -------------------- RPUSH --------------------
 std::string rpush(RedisHashMap& map, const std::string& key, const std::string& value) {
@@ -31,15 +35,19 @@ std::string rpush(RedisHashMap& map, const std::string& key, const std::string& 
 
     if (!obj) {
         list = new LinkedList();
-        map.add(key, RedisObject(list));
-    } else {
-        if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
-        list = static_cast<LinkedList*>(obj->getPtr());
+        list->push_back(value);            
+        map.add(key, RedisObject(list));  
+        return ":1";
     }
 
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    list = static_cast<LinkedList*>(obj->getPtr());
     list->push_back(value);
+
     return ":" + std::to_string(list->size);
 }
+
 
 // -------------------- LPOP --------------------
 std::string lpop(RedisHashMap& map, const std::string& key) {
@@ -117,5 +125,55 @@ std::string lset(RedisHashMap& map, const std::string& key, const std::string& i
     list->set(idx, value);
     return "+OK";
 }
+
+std::string lsort(RedisHashMap& map, const std::string& key, const std::string& orderStr) {
+    RedisObject* obj = map.get(key);
+    if (!obj) return "-ERR no such key";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    int order;
+    try {
+        order = std::stoi(orderStr);
+    } catch (...) {
+        return "-ERR invalid order";
+    }
+
+    if (order != 1 && order != 2)
+        return "-ERR order must be 1 (asc) or 2 (desc)";
+
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+
+    try {
+        list->sort(order == 1);
+    } catch (...) {
+        return "-ERR list contains non-numeric values";
+    }
+
+    return "+OK";
+}
+
+// -------------------- LPRINT --------------------
+std::string lprint(RedisHashMap& map, const std::string& key) {
+    RedisObject* obj = map.get(key);
+    if (!obj) return "$-1";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+    if (!list || list->empty()) return "[]";
+
+    std::ostringstream out;
+    out << "[";
+
+    ListNode* curr = list->head;
+    while (curr) {
+        out << curr->value;
+        if (curr->next) out << ", ";
+        curr = curr->next;
+    }
+
+    out << "]";
+    return out.str();
+}
+
 
 } // namespace liststore

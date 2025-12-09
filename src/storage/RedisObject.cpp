@@ -1,8 +1,58 @@
 #include "storage/RedisObject.hpp"
 #include "storage/LinkedList.hpp"
 
-// ---------- Constructors ----------
+// ---------- Helper: clear pointer ----------
+void RedisObject::clearPtr() {
+    if (!ptr) return;
+    switch (type) {
+        case RedisType::INT:
+            delete static_cast<int*>(ptr);
+            break;
+        case RedisType::STRING:
+            delete static_cast<std::string*>(ptr);
+            break;
+        case RedisType::BOOL:
+            delete static_cast<bool*>(ptr);
+            break;
+        case RedisType::LIST:
+            // LIST here uses LinkedList* ownership (not std::vector)
+            delete static_cast<LinkedList*>(ptr);
+            break;
+        case RedisType::HASH:
+            delete static_cast<std::unordered_map<std::string, RedisObject>*>(ptr);
+            break;
+        case RedisType::SET:
+            delete static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(ptr);
+            break;
+    }
+    ptr = nullptr;
+}
 
+// ---------- Helper: clone pointer for deep copy ----------
+void* RedisObject::clonePtr() const {
+    if (!ptr) return nullptr;
+    switch (type) {
+        case RedisType::INT:
+            return new int(*static_cast<int*>(ptr));
+        case RedisType::STRING:
+            return new std::string(*static_cast<std::string*>(ptr));
+        case RedisType::BOOL:
+            return new bool(*static_cast<bool*>(ptr));
+        case RedisType::LIST: {
+            // We expect a LinkedList* (created elsewhere)
+            LinkedList* src = static_cast<LinkedList*>(ptr);
+            if (!src) return nullptr;
+            return src->clone(); // uses LinkedList::clone()
+        }
+        case RedisType::HASH:
+            return new std::unordered_map<std::string, RedisObject>(*static_cast<std::unordered_map<std::string, RedisObject>*>(ptr));
+        case RedisType::SET:
+            return new std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>(*static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(ptr));
+    }
+    return nullptr;
+}
+
+// ---------- Constructors ----------
 RedisObject::RedisObject(int value) {
     type = RedisType::INT;
     ptr = new int(value);
@@ -20,11 +70,12 @@ RedisObject::RedisObject(bool value) {
 
 RedisObject::RedisObject(LinkedList* list) {
     type = RedisType::LIST;
-    ptr = list;
+    ptr = list; // ownership transferred in current design
 }
 
 RedisObject::RedisObject(const std::vector<RedisObject>& value) {
     type = RedisType::LIST;
+    // If this ctor is used, store a vector (legacy/alternative representation)
     ptr = new std::vector<RedisObject>(value);
 }
 
@@ -38,35 +89,52 @@ RedisObject::RedisObject(const std::unordered_set<RedisObject, RedisObjectHash, 
     ptr = new std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>(value);
 }
 
+// ---------- Copy constructor (deep copy) ----------
+RedisObject::RedisObject(const RedisObject& other) {
+    type = other.type;
+    if (other.ptr)
+        ptr = other.clonePtr();
+    else
+        ptr = nullptr;
+}
+
+// ---------- Copy assignment (deep copy) ----------
+RedisObject& RedisObject::operator=(const RedisObject& other) {
+    if (this == &other) return *this;
+    // free current
+    clearPtr();
+    type = other.type;
+    ptr = other.ptr ? other.clonePtr() : nullptr;
+    return *this;
+}
+
+// ---------- Move constructor ----------
+RedisObject::RedisObject(RedisObject&& other) noexcept {
+    type = other.type;
+    ptr = other.ptr;
+    other.ptr = nullptr;
+    // Optionally set other.type to some default; we leave it as-is
+}
+
+// ---------- Move assignment ----------
+RedisObject& RedisObject::operator=(RedisObject&& other) noexcept {
+    if (this == &other) return *this;
+    clearPtr();
+    type = other.type;
+    ptr = other.ptr;
+    other.ptr = nullptr;
+    return *this;
+}
+
 // ---------- Destructor ----------
 RedisObject::~RedisObject() {
-    switch (type) {
-        case RedisType::INT:
-            delete static_cast<int*>(ptr);
-            break;
-        case RedisType::STRING:
-            delete static_cast<std::string*>(ptr);
-            break;
-        case RedisType::BOOL:
-            delete static_cast<bool*>(ptr);
-            break;
-        case RedisType::LIST:
-            delete static_cast<std::vector<RedisObject>*>(ptr);
-            break;
-        case RedisType::HASH:
-            delete static_cast<std::unordered_map<std::string, RedisObject>*>(ptr);
-            break;
-        case RedisType::SET:
-            delete static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(ptr);
-            break;
-    }
+    clearPtr();
 }
 
 // ---------- Type Getter ----------
 RedisType RedisObject::getType() const {
     return type;
 }
-
 
 // ---------- Equality ----------
 bool RedisObject::operator==(const RedisObject& other) const {
@@ -78,8 +146,12 @@ bool RedisObject::operator==(const RedisObject& other) const {
             return *(std::string*)ptr == *(std::string*)other.ptr;
         case RedisType::BOOL:
             return *(bool*)ptr == *(bool*)other.ptr;
+        case RedisType::LIST:
+        case RedisType::HASH:
+        case RedisType::SET:
+            return ptr == other.ptr; // for complex types we still compare pointer identity
         default:
-            return ptr == other.ptr; // pointer compare for complex types
+            return ptr == other.ptr;
     }
 }
 

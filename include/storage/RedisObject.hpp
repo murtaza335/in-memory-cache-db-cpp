@@ -30,6 +30,12 @@ private:
     RedisType type;
     void* ptr;
 
+    // helper to free ptr and reset
+    void clearPtr();
+
+    // helper to clone pointer for copy constructor/assignment
+    void* clonePtr() const;
+
 public:
     // ---------- Constructors ----------
     RedisObject(int value);
@@ -40,8 +46,22 @@ public:
     RedisObject(const std::unordered_map<std::string, RedisObject>& value);
     RedisObject(const std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>& value);
 
+    // ---------- Rule of five ----------
+    // Copy constructor (deep copy)
+    RedisObject(const RedisObject& other);
+
+    // Copy assignment (deep copy)
+    RedisObject& operator=(const RedisObject& other);
+
+    // Move constructor
+    RedisObject(RedisObject&& other) noexcept;
+
+    // Move assignment
+    RedisObject& operator=(RedisObject&& other) noexcept;
+
     // ---------- Destructor ----------
     ~RedisObject();
+
 
     // ---------- Type Getter ----------
     RedisType getType() const;

@@ -31,12 +31,19 @@ public:
     std::string pop_front();
     std::string pop_back();
 
+    //sorting
+    void sort(bool ascending);
+
+
     // Random access (O(n))
     std::string get(long long index) const;
     void set(long long index, const std::string& val);
 
     // Helpers
     bool empty() const { return size == 0; }
+
+    // Clone (deep copy) helper
+    LinkedList* clone() const;
 };
 
 #endif // LINKEDLIST_HPP
