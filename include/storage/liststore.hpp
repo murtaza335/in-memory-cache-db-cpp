@@ -30,6 +30,13 @@ namespace liststore {
     // Set element at index
     std::string lset(RedisHashMap& map, const std::string& key, const std::string& indexStr, const std::string& value);
 
+    // Sort list: 1 = ascending, 2 = descending
+    std::string lsort(RedisHashMap& map, const std::string& key, const std::string& orderStr);
+
+    // Print entire list
+    std::string lprint(RedisHashMap& map, const std::string& key);
+
+
 }
 
 #endif

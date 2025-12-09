@@ -90,3 +90,65 @@ void LinkedList::set(long long index, const std::string& val) {
     for (long long i = 0; i < index; ++i) current = current->next;
     current->value = val;
 }
+
+// ================= MERGE SORT FOR LINKED LIST =================
+
+static ListNode* split(ListNode* head) {
+    ListNode* fast = head;
+    ListNode* slow = head;
+
+    while (fast->next && fast->next->next) {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+
+    ListNode* second = slow->next;
+    slow->next = nullptr;
+    if (second) second->prev = nullptr;
+    return second;
+}
+
+static ListNode* merge(ListNode* a, ListNode* b, bool asc) {
+    if (!a) return b;
+    if (!b) return a;
+
+    long long av = std::stoll(a->value);
+    long long bv = std::stoll(b->value);
+
+    bool takeA = asc ? (av <= bv) : (av >= bv);
+
+    if (takeA) {
+        a->next = merge(a->next, b, asc);
+        if (a->next) a->next->prev = a;
+        a->prev = nullptr;
+        return a;
+    } else {
+        b->next = merge(a, b->next, asc);
+        if (b->next) b->next->prev = b;
+        b->prev = nullptr;
+        return b;
+    }
+}
+
+static ListNode* mergeSort(ListNode* head, bool asc) {
+    if (!head || !head->next) return head;
+
+    ListNode* second = split(head);
+
+    head = mergeSort(head, asc);
+    second = mergeSort(second, asc);
+
+    return merge(head, second, asc);
+}
+
+
+void LinkedList::sort(bool ascending) {
+    if (!head || size < 2) return;
+
+    head = mergeSort(head, ascending);
+
+    // Fix tail pointer
+    tail = head;
+    while (tail && tail->next)
+        tail = tail->next;
+}

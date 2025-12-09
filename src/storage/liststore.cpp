@@ -118,4 +118,54 @@ std::string lset(RedisHashMap& map, const std::string& key, const std::string& i
     return "+OK";
 }
 
+std::string lsort(RedisHashMap& map, const std::string& key, const std::string& orderStr) {
+    RedisObject* obj = map.get(key);
+    if (!obj) return "-ERR no such key";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    int order;
+    try {
+        order = std::stoi(orderStr);
+    } catch (...) {
+        return "-ERR invalid order";
+    }
+
+    if (order != 1 && order != 2)
+        return "-ERR order must be 1 (asc) or 2 (desc)";
+
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+
+    try {
+        list->sort(order == 1);
+    } catch (...) {
+        return "-ERR list contains non-numeric values";
+    }
+
+    return "+OK";
+}
+
+// -------------------- LPRINT --------------------
+std::string lprint(RedisHashMap& map, const std::string& key) {
+    RedisObject* obj = map.get(key);
+    if (!obj) return "$-1";
+    if (obj->getType() != RedisType::LIST) return "-ERR wrong type";
+
+    LinkedList* list = static_cast<LinkedList*>(obj->getPtr());
+    if (!list || list->empty()) return "[]";
+
+    std::ostringstream out;
+    out << "[";
+
+    ListNode* curr = list->head;
+    while (curr) {
+        out << curr->value;
+        if (curr->next) out << ", ";
+        curr = curr->next;
+    }
+
+    out << "]";
+    return out.str();
+}
+
+
 } // namespace liststore
