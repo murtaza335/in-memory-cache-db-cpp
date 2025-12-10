@@ -1,121 +1,144 @@
-#include "../../include/storage/RedisSets.hpp"
-#include "storage/murmurhash/murmurhash3.hpp"
-#include <cstring>
+#include "storage/RedisSets.hpp"
+#include <sstream>
+#include <algorithm>
+#include <random>
 
-SetNode::SetNode(const std::string& val) : value(val), next(nullptr) {}
+namespace setstore {
 
-// Hash function
-int MySet::hashFunc(const std::string& val) const {
-    uint32_t hash = MurmurHash3_x86_32(val, 0);
-    return hash % capacity;
-}
-
-MySet::MySet() {
-    capacity = 1024;
-    count = 0;
-    table = new SetNode*[capacity];
-    for (int i = 0; i < capacity; i++)
-        table[i] = nullptr;
-}
-
-MySet::~MySet() {
-    for (int i = 0; i < capacity; i++) {
-        SetNode* node = table[i];
-        while (node) {
-            SetNode* temp = node;
-            node = node->next;
-            delete temp;
+    // ---------- Helper: get or create set ----------
+    std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>* getOrCreateSet(RedisHashMap& map, const std::string& key) {
+        RedisObject* obj = map.get(key);
+        if (!obj) {
+            std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual> s;
+            map.add(key, RedisObject(s));
+            obj = map.get(key);
         }
+
+        if (obj->getType() != RedisType::SET) return nullptr;
+        return static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj->getPtr());
     }
-    delete[] table;
-}
 
-void MySet::rehash() {
-    int oldCap = capacity;
-    capacity *= 2;
+    // ---------- SADD ----------
+    std::string sadd(RedisHashMap& map, const std::string& key, const std::string& value) {
+        auto* s = getOrCreateSet(map, key);
+        if (!s) return "-ERR Key exists but is not a set";
+        size_t inserted = s->emplace(RedisObject(value)).second ? 1 : 0;
+        return std::to_string(inserted);
+    }
 
-    SetNode** oldTable = table;
-    table = new SetNode*[capacity];
+    // ---------- SREM ----------
+    std::string srem(RedisHashMap& map, const std::string& key, const std::string& value) {
+        RedisObject* obj = map.get(key);
+        if (!obj || obj->getType() != RedisType::SET) return "0";
+        auto* s = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj->getPtr());
+        size_t erased = s->erase(RedisObject(value));
+        return std::to_string(erased);
+    }
 
-    for (int i = 0; i < capacity; i++)
-        table[i] = nullptr;
-
-    count = 0;
-
-    for (int i = 0; i < oldCap; i++) {
-        SetNode* node = oldTable[i];
-        while (node) {
-            sadd(node->value); // reinsertion
-            SetNode* temp = node;
-            node = node->next;
-            delete temp;
+    // ---------- SMEMBERS ----------
+    std::string smembers(RedisHashMap& map, const std::string& key) {
+        RedisObject* obj = map.get(key);
+        if (!obj || obj->getType() != RedisType::SET) return "-ERR no such set";
+        auto* s = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj->getPtr());
+        std::stringstream ss;
+        for (const auto& item : *s) {
+            ss << item.getValue<std::string>() << " ";
         }
+        std::string res = ss.str();
+        if (!res.empty()) res.pop_back(); // remove trailing space
+        return res;
     }
 
-    delete[] oldTable;
-}
+    // ---------- SCARD ----------
+    std::string scard(RedisHashMap& map, const std::string& key) {
+        RedisObject* obj = map.get(key);
+        if (!obj || obj->getType() != RedisType::SET) return "0";
+        auto* s = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj->getPtr());
+        return std::to_string(s->size());
+    }
 
-bool MySet::sadd(const std::string& val) {
-    if (sismember(val)) return false;
+    // ---------- SPOP ----------
+    std::string spop(RedisHashMap& map, const std::string& key) {
+        RedisObject* obj = map.get(key);
+        if (!obj || obj->getType() != RedisType::SET) return "-ERR no such set";
+        auto* s = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj->getPtr());
+        if (s->empty()) return "-ERR set empty";
 
-    if (count > capacity * 0.75)
-        rehash();
+        auto it = s->begin();
+        std::advance(it, rand() % s->size());
+        std::string val = it->getValue<std::string>();
+        s->erase(it);
+        return val;
+    }
 
-    int idx = hashFunc(val);
-    SetNode* newNode = new SetNode(val);
-    newNode->next = table[idx];
-    table[idx] = newNode;
+    // ---------- SISMEMBER ----------
+    std::string sismember(RedisHashMap& map, const std::string& key, const std::string& value) {
+        RedisObject* obj = map.get(key);
+        if (!obj || obj->getType() != RedisType::SET) return "0";
+        auto* s = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj->getPtr());
+        return s->count(RedisObject(value)) ? "1" : "0";
+    }
 
-    count++;
-    return true;
-}
+    // ---------- SUNION ----------
+    std::string sunion(RedisHashMap& map, const std::string& key1, const std::string& key2) {
+        RedisObject* obj1 = map.get(key1);
+        RedisObject* obj2 = map.get(key2);
+        std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual> result;
 
-bool MySet::srem(const std::string& val) {
-    int idx = hashFunc(val);
-    SetNode* node = table[idx];
-    SetNode* prev = nullptr;
-
-    while (node) {
-        if (node->value == val) {
-            if (prev) prev->next = node->next;
-            else table[idx] = node->next;
-
-            delete node;
-            count--;
-            return true;
+        if (obj1 && obj1->getType() == RedisType::SET) {
+            auto* s1 = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj1->getPtr());
+            result.insert(s1->begin(), s1->end());
         }
-        prev = node;
-        node = node->next;
-    }
-    return false;
-}
 
-bool MySet::sismember(const std::string& val) const {
-    int idx = hashFunc(val);
-    SetNode* node = table[idx];
-
-    while (node) {
-        if (node->value == val)
-            return true;
-        node = node->next;
-    }
-    return false;
-}
-
-int MySet::scard() const {
-    return count;
-}
-
-void MySet::smembers(std::string* output, int& size) const {
-    int idx = 0;
-
-    for (int i = 0; i < capacity; i++) {
-        SetNode* node = table[i];
-        while (node) {
-            output[idx++] = node->value;
-            node = node->next;
+        if (obj2 && obj2->getType() == RedisType::SET) {
+            auto* s2 = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj2->getPtr());
+            result.insert(s2->begin(), s2->end());
         }
+
+        std::stringstream ss;
+        for (const auto& item : result) ss << item.getValue<std::string>() << " ";
+        std::string res = ss.str();
+        if (!res.empty()) res.pop_back();
+        return res;
     }
 
-    size = idx;
+    // ---------- SINTER ----------
+    std::string sinter(RedisHashMap& map, const std::string& key1, const std::string& key2) {
+        RedisObject* obj1 = map.get(key1);
+        RedisObject* obj2 = map.get(key2);
+        if (!obj1 || obj1->getType() != RedisType::SET) return "";
+        if (!obj2 || obj2->getType() != RedisType::SET) return "";
+
+        auto* s1 = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj1->getPtr());
+        auto* s2 = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj2->getPtr());
+
+        std::stringstream ss;
+        for (const auto& item : *s1) {
+            if (s2->count(item)) ss << item.getValue<std::string>() << " ";
+        }
+        std::string res = ss.str();
+        if (!res.empty()) res.pop_back();
+        return res;
+    }
+
+    // ---------- SDIFF ----------
+    std::string sdiff(RedisHashMap& map, const std::string& key1, const std::string& key2) {
+        RedisObject* obj1 = map.get(key1);
+        RedisObject* obj2 = map.get(key2);
+        if (!obj1 || obj1->getType() != RedisType::SET) return "";
+        auto* s1 = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj1->getPtr());
+        std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual> result = *s1;
+
+        if (obj2 && obj2->getType() == RedisType::SET) {
+            auto* s2 = static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj2->getPtr());
+            for (const auto& item : *s2) result.erase(item);
+        }
+
+        std::stringstream ss;
+        for (const auto& item : result) ss << item.getValue<std::string>() << " ";
+        std::string res = ss.str();
+        if (!res.empty()) res.pop_back();
+        return res;
+    }
+
 }

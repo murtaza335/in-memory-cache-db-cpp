@@ -1,35 +1,27 @@
-#ifndef REDISSETS_HPP
-#define REDISSETS_HPP
+#ifndef REDIS_SETS_HPP
+#define REDIS_SETS_HPP
 
+#include "RedisHashMap.hpp"
+#include "RedisObject.hpp"
 #include <string>
+#include <unordered_set>
+#include <vector>
 
-class SetNode {
-public:
-    std::string value;
-    SetNode* next;
+namespace setstore {
 
-    SetNode(const std::string& val);
-};
+    // ---------------- Basic Set Commands ----------------
+    std::string sadd(RedisHashMap& map, const std::string& key, const std::string& value);
+    std::string srem(RedisHashMap& map, const std::string& key, const std::string& value);
+    std::string smembers(RedisHashMap& map, const std::string& key);
+    std::string scard(RedisHashMap& map, const std::string& key);
+    std::string spop(RedisHashMap& map, const std::string& key);
+    std::string sismember(RedisHashMap& map, const std::string& key, const std::string& value);
 
-class MySet {
-private:
-    int capacity;
-    int count;
-    SetNode** table;
+    // ---------------- Set Operations ----------------
+    std::string sunion(RedisHashMap& map, const std::string& key1, const std::string& key2);
+    std::string sinter(RedisHashMap& map, const std::string& key1, const std::string& key2);
+    std::string sdiff(RedisHashMap& map, const std::string& key1, const std::string& key2);
 
-    int hashFunc(const std::string& val) const;
-    void rehash();
+}
 
-public:
-    MySet();
-    ~MySet();
-
-    bool sadd(const std::string& val);
-    bool srem(const std::string& val);
-    bool sismember(const std::string& val) const;
-    int scard() const;
-
-    void smembers(std::string* output, int& size) const;
-};
-
-#endif
+#endif // REDIS_SETS_HPP

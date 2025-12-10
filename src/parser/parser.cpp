@@ -1,6 +1,7 @@
 #include "parser/parser.hpp"
 #include "storage/stringstore.hpp"
 #include "storage/liststore.hpp"
+#include "storage/RedisSets.hpp"  
 
 #include <sstream>
 #include <algorithm>
@@ -163,6 +164,55 @@ std::string Parser::processCommand(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2) return "-ERR LPRINT requires list";
     return liststore::lprint(baseMap, tokens[1]);
     }
+
+
+
+    // ---------------- SET COMMANDS ----------------
+    if (cmd == "SADD") {
+        if (tokens.size() < 3) return "-ERR SADD requires set value";
+        return setstore::sadd(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "SREM") {
+        if (tokens.size() < 3) return "-ERR SREM requires set value";
+        return setstore::srem(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "SMEMBERS") {
+        if (tokens.size() < 2) return "-ERR SMEMBERS requires set";
+        return setstore::smembers(baseMap, tokens[1]);
+    }
+
+    if (cmd == "SCARD") {
+        if (tokens.size() < 2) return "-ERR SCARD requires set";
+        return setstore::scard(baseMap, tokens[1]);
+    }
+
+    if (cmd == "SPOP") {
+        if (tokens.size() < 2) return "-ERR SPOP requires set";
+        return setstore::spop(baseMap, tokens[1]);
+    }
+
+    if (cmd == "SISMEMBER") {
+        if (tokens.size() < 3) return "-ERR SISMEMBER requires set value";
+        return setstore::sismember(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "SUNION") {
+        if (tokens.size() < 3) return "-ERR SUNION requires two sets";
+        return setstore::sunion(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "SINTER") {
+        if (tokens.size() < 3) return "-ERR SINTER requires two sets";
+        return setstore::sinter(baseMap, tokens[1], tokens[2]);
+    }
+
+    if (cmd == "SDIFF") {
+        if (tokens.size() < 3) return "-ERR SDIFF requires two sets";
+        return setstore::sdiff(baseMap, tokens[1], tokens[2]);
+    }
+
 
     // ---------------- UNKNOWN ----------------
     return "-ERR unknown command";
