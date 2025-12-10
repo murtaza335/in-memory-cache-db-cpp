@@ -13,7 +13,7 @@ std::string hset(RedisHashMap& map, const std::string& key,
 
     if (!obj) {
         hash = new std::unordered_map<std::string, RedisObject>();
-        (*hash)[field] = RedisObject(value);
+        hash->insert_or_assign(field, RedisObject(value));
         map.add(key, RedisObject(*hash));
         return ":1";
     }
@@ -23,7 +23,7 @@ std::string hset(RedisHashMap& map, const std::string& key,
 
     hash = static_cast<std::unordered_map<std::string, RedisObject>*>(obj->getPtr());
     bool isNew = hash->find(field) == hash->end();
-    (*hash)[field] = RedisObject(value);
+    hash->insert_or_assign(field, RedisObject(value));
 
     return isNew ? ":1" : ":0";
 }
