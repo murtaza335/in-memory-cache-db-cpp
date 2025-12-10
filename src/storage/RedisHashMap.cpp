@@ -104,3 +104,4 @@ RedisObject* RedisHashMap::get(const std::string& key) {
 
     return nullptr; // not found
 }
+
