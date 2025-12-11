@@ -13,9 +13,27 @@ size_t RedisHashMap::getIndex(const std::string& key) const {
     return hash % capacity;
 }
 
+// resize method
+void RedisHashMap::resize(size_t newCapacity) {
+    std::vector<std::vector<HashEntry>> newBuckets;
+    newBuckets.resize(newCapacity);
+
+    // Rehash all entries into the new bucket table
+    for (auto& bucket : buckets) {
+        for (auto& entry : bucket) {
+            uint32_t hash = MurmurHash3_x86_32(entry.key);
+            size_t newIdx = hash % newCapacity;
+            newBuckets[newIdx].emplace_back(entry.key, entry.value);
+        }
+    }
+
+    buckets.swap(newBuckets);
+    capacity = newCapacity;
+}
+
+
 // -------------------- Add/Insert --------------------
 bool RedisHashMap::add(const std::string& key, const RedisObject& value) {
-    std::cout<<"adding key inside redis base hashmap";
     size_t idx = getIndex(key);
     auto& bucket = buckets[idx];
 
@@ -28,6 +46,12 @@ bool RedisHashMap::add(const std::string& key, const RedisObject& value) {
     }
 
     bucket.emplace_back(key, value);
+    count++;
+
+    // Check load factor
+    if ((float)count / (float)capacity > loadFactor) {
+        resize(capacity * 2);     // double the size
+    }
     return true;
 }
 
@@ -41,6 +65,7 @@ bool RedisHashMap::del(const std::string& key) {
 
     if (it != bucket.end()) {
         bucket.erase(it);
+        count--;     // decrement count
         return true;
     }
 
