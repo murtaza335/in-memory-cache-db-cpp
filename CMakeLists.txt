@@ -22,6 +22,7 @@ add_executable(main
     src/storage/hashmapstore.cpp
     src/storage/LinkedList.cpp
     src/storage/RedisSets.cpp
+    src/storage/TTLPriorityQueue.cpp
 )
 
 if (WIN32)
