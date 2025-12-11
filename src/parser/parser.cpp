@@ -5,6 +5,7 @@
 #include "storage/RedisSets.hpp"
 #include "storage/hashmapstore.hpp"
 #include "storage/RedisObject.hpp"
+#include "storage/TTLPriorityQueue.hpp"
 
 #include <sstream>
 #include <algorithm>
@@ -244,6 +245,43 @@ static const std::unordered_map<std::string, Parser::CommandSpec>& buildCommandT
                          if (t.size() < 2) return std::string("-ERR HLEN requires key");
                          return hashmapstore::hlen(m, t[1]);
                      }, 2, 2, "HLEN key" } },
+
+        { "EXPIRE", { [](RedisHashMap& m, const std::vector<std::string>& t) {
+        if (t.size() < 3) return std::string("-ERR EXPIRE requires key seconds");
+        const std::string key = t[1];
+        const std::string secStr = t[2];
+        // parse seconds
+        long long seconds = 0;
+        try {
+            size_t idx = 0;
+            seconds = std::stoll(secStr, &idx);
+            if (idx != secStr.size()) return std::string("-ERR invalid seconds");
+        } catch (...) {
+            return std::string("-ERR invalid seconds");
+        }
+        // If key doesn't exist in DB, return 0
+        if (!m.exists(key)) return std::string(":0");
+        // ensure global TTL queue is created and started
+        TTLPriorityQueue* q = getGlobalTTL(&m);
+        bool ok = q->insertOrUpdate(key, seconds);
+        return ok ? std::string(":1") : std::string(":0");
+            }, 3, 3, "EXPIRE key seconds"
+} },
+
+        {"TTL", { [](RedisHashMap& m, const std::vector<std::string>& t) {
+                if (t.size() < 2) return std::string("-ERR TTL requires key");
+                const std::string key = t[1];
+                // If key doesn't exist return -2
+                if (!m.exists(key)) return std::string(":-2");
+                // If TTL system not started yet, return -1 (no ttl set)
+                TTLPriorityQueue* q = getGlobalTTL(&m);
+                long long rem = q->getTTLSeconds(key);
+                if (rem == -2) return std::string(":-2");
+                if (rem == -1) return std::string(":-1");
+                return std::string(":") + std::to_string(rem);
+            }, 2, 2, "TTL key"
+        } },
+
     };
     return table;
 }
