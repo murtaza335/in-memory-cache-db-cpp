@@ -3,7 +3,7 @@
 #include <cassert>
 #include <cmath>
 
-// Simple timestamp utility for logging
+// logging utility with simple timestamp
 static std::string getTimestamp() {
     auto now_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     char buf[64];
@@ -11,11 +11,11 @@ static std::string getTimestamp() {
     return std::string(buf);
 }
 
-// ------------------- TTLPriorityQueue implementation -------------------
+// ttl priority q implementation
 
 TTLPriorityQueue::TTLPriorityQueue(RedisHashMap* db)
     : dbPtr(db), running(false) {
-    // do not start worker automatically unless start(db) is called
+    // worker started automatically if start(db) enabled
 }
 
 TTLPriorityQueue::~TTLPriorityQueue() {
@@ -25,7 +25,7 @@ TTLPriorityQueue::~TTLPriorityQueue() {
 void TTLPriorityQueue::start(RedisHashMap* db) {
     std::lock_guard<std::mutex> lock(mu);
     if (running.load()) {
-        // Already running; if db was null and now provided, update pointer
+        // if db null and now provided then update the pointer
         if (db && !dbPtr) dbPtr = db;
         return;
     }
@@ -61,13 +61,13 @@ size_t TTLPriorityQueue::size() const {
 }
 
 bool TTLPriorityQueue::insertOrUpdate(const std::string& key, long long seconds) {
-    // Need DB existence check: if key doesn't exist in DB, return false.
+    // db existence check will return false if db key doesnt exist
     if (!dbPtr) {
         std::cerr << "[" << getTimestamp() << "] [ERROR] TTLPriorityQueue: dbPtr is null in insertOrUpdate\n";
         return false;
     }
     if (!dbPtr->exists(key)) {
-        return false; // match Redis behavior: cannot set TTL for non-existing key
+        return false; // no ttl setup for existing key just like redis
     }
 
     auto expiry = now() + std::chrono::seconds(seconds);
@@ -75,10 +75,10 @@ bool TTLPriorityQueue::insertOrUpdate(const std::string& key, long long seconds)
     std::lock_guard<std::mutex> lock(mu);
     auto it = indexMap.find(key);
     if (it != indexMap.end()) {
-        // update expiry and reheapify
+        // expiry reheapify update
         size_t idx = it->second;
         heap[idx].expireAt = expiry;
-        // reheapify up or down depending on new expiry
+        // up or down reheapify depending on ther quantiry
         heapifyUp(idx);
         heapifyDown(idx);
         return true;
@@ -119,14 +119,14 @@ bool TTLPriorityQueue::remove(const std::string& key) {
 }
 
 long long TTLPriorityQueue::getTTLSeconds(const std::string& key) const {
-    if (!dbPtr) return -2; // no db -> treat as absent
+    if (!dbPtr) return -2; // if no db then treat as absent
 
     // first check DB presence
     if (!dbPtr->exists(key)) return -2;
 
     std::lock_guard<std::mutex> lock(mu);
     auto it = indexMap.find(key);
-    if (it == indexMap.end()) return -1; // exists but no TTL
+    if (it == indexMap.end()) return -1; // no ttl but exists
 
     size_t idx = it->second;
     auto expireAt = heap[idx].expireAt;
@@ -136,12 +136,12 @@ long long TTLPriorityQueue::getTTLSeconds(const std::string& key) const {
     return static_cast<long long>(diff);
 }
 
-// -------- heap helpers --------
+// heap helper methods
 
 void TTLPriorityQueue::swapNodes(size_t a, size_t b) {
     assert(a < heap.size() && b < heap.size());
     std::swap(heap[a], heap[b]);
-    // update indexMap
+    // updating indexMap
     indexMap[heap[a].key] = a;
     indexMap[heap[b].key] = b;
 }
@@ -195,8 +195,9 @@ void TTLPriorityQueue::processExpiredLocked() {
     while (!heap.empty()) {
         if (heap[0].expireAt <= nowtp) {
             std::string keyToExpire = popRootNoLock();
-            // call DB delete outside lock? we must call without holding lock to avoid deadlock if DB uses TTL queue again.
-            // But currently we are in locked context. We'll release lock when calling db->del to avoid reentrancy issues.
+            // we should perform DB delete without holding this lock to avoid potential deadlocks
+            // especially if the DB internally interacts with the TTL queue
+            // unlock before calling db->del to prevent re entrancy issues
             mu.unlock();
             // log and delete from DB
             std::cout << "[" << getTimestamp() << "] [INFO] TTL EXPIRE - Key expired: " << keyToExpire << std::endl;
@@ -214,16 +215,15 @@ void TTLPriorityQueue::processExpiredLocked() {
 
 void TTLPriorityQueue::workerLoop() {
     while (running.load()) {
-        // Wait for either the interval or stop signal
+        // wait for either the interval or stop signal
         {
             std::unique_lock<std::mutex> lk(cvMu);
             cv.wait_for(lk, workerInterval, [this](){ return !running.load(); });
         }
         if (!running.load()) break;
 
-        // Process expired entries
-        // We will iterate popping expired items. Each pop will call db->del without holding the mutex (see processExpiredLocked).
-        // Acquire lock then processExpiredLocked (which temporarily releases the mutex when calling db->del)
+        // process expired entries each pop triggers db->del outside the lock
+        // acquire mutex then processExpiredLocked it will release lock when calling db->del
         mu.lock();
         // process expired will pop nodes and call db->del while releasing mutex as needed.
         processExpiredLocked();
@@ -231,9 +231,8 @@ void TTLPriorityQueue::workerLoop() {
     }
 }
 
-// ----------------- global singleton accessor -----------------
-
-// Single global pointer (internal linkage)
+// global singleton accessor 
+// single global pointer 
 static TTLPriorityQueue* g_ttl = nullptr;
 
 TTLPriorityQueue* getGlobalTTL(RedisHashMap* db) {
