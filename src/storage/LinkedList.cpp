@@ -1,7 +1,7 @@
 
 #include "storage/liststore.hpp"
 
-// ----------------- Destructor -----------------
+// destructor
 LinkedList::~LinkedList() {
     ListNode* current = head;
     while (current) {
@@ -10,8 +10,8 @@ LinkedList::~LinkedList() {
         current = next;
     }
 }
-
-// ----------------- Push Front -----------------
+// dual push
+// push front 
 void LinkedList::push_front(const std::string& val) {
     ListNode* node = new ListNode(val);
     if (!head) {
@@ -24,7 +24,7 @@ void LinkedList::push_front(const std::string& val) {
     ++size;
 }
 
-// ----------------- Push Back -----------------
+// push back
 void LinkedList::push_back(const std::string& val) {
     ListNode* node = new ListNode(val);
     if (!tail) {
@@ -36,8 +36,8 @@ void LinkedList::push_back(const std::string& val) {
     }
     ++size;
 }
-
-// ----------------- Pop Front -----------------
+// dual pop
+// pop from front
 std::string LinkedList::pop_front() {
     if (!head) throw std::runtime_error("list empty");
 
@@ -53,7 +53,7 @@ std::string LinkedList::pop_front() {
     return val;
 }
 
-// ----------------- Pop Back -----------------
+// pop from back
 std::string LinkedList::pop_back() {
     if (!tail) throw std::runtime_error("list empty");
 
@@ -69,7 +69,7 @@ std::string LinkedList::pop_back() {
     return val;
 }
 
-// ----------------- Get by index -----------------
+// get index
 std::string LinkedList::get(long long index) const {
     if (index < 0) index += size; // support negative indices
     if (index < 0 || index >= (long long)size)
@@ -80,7 +80,7 @@ std::string LinkedList::get(long long index) const {
     return current->value;
 }
 
-// ----------------- Set by index -----------------
+// index set
 void LinkedList::set(long long index, const std::string& val) {
     if (index < 0) index += size;
     if (index < 0 || index >= (long long)size)
@@ -91,7 +91,7 @@ void LinkedList::set(long long index, const std::string& val) {
     current->value = val;
 }
 
-// ================= MERGE SORT FOR LINKED LIST =================
+// MERGE sort on linked list
 
 static ListNode* split(ListNode* head) {
     ListNode* fast = head;
@@ -147,14 +147,14 @@ void LinkedList::sort(bool ascending) {
 
     head = mergeSort(head, ascending);
 
-    // Fix tail pointer
+    // Fixing tail pointer
     tail = head;
     while (tail && tail->next)
         tail = tail->next;
 }
 
 
-// ---------- Clone (deep copy) ----------
+// clone
 LinkedList* LinkedList::clone() const {
     LinkedList* copy = new LinkedList();
     ListNode* curr = head;

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <chrono>
 
-// Utility function for timestamp
+// timestamp utility
 std::string getTimestamp() {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
@@ -11,7 +11,7 @@ std::string getTimestamp() {
     return buffer;
 }
 
-// -------------------- Constructor --------------------
+// cosntructor
 RedisHashMap::RedisHashMap(size_t size)
     : capacity(size)
 {
@@ -20,13 +20,13 @@ RedisHashMap::RedisHashMap(size_t size)
               << capacity << ", Load factor: " << loadFactor << std::endl;
 }
 
-// -------------------- Compute bucket index --------------------
+// computing the bucket index
 size_t RedisHashMap::getIndex(const std::string& key) const {
     uint32_t hash = MurmurHash3_x86_32(key);
     return hash % capacity;
 }
 
-// resize method
+// method to resize the hashmap
 void RedisHashMap::resize(size_t newCapacity) {
     std::cout << "[" << getTimestamp() << "] [INFO] RESIZE operation started - Old capacity: " 
               << capacity << ", New capacity: " << newCapacity << ", Current entries: " << count << std::endl;
@@ -34,7 +34,7 @@ void RedisHashMap::resize(size_t newCapacity) {
     std::vector<std::vector<HashEntry>> newBuckets;
     newBuckets.resize(newCapacity);
 
-    // Rehash all entries into the new bucket table
+    // new bucket table and rehashing 
     for (auto& bucket : buckets) {
         for (auto& entry : bucket) {
             uint32_t hash = MurmurHash3_x86_32(entry.key);
@@ -52,7 +52,7 @@ void RedisHashMap::resize(size_t newCapacity) {
 }
 
 
-// -------------------- Add/Insert --------------------
+// insert
 bool RedisHashMap::add(const std::string& key, const RedisObject& value) {
     std::cout << "[" << getTimestamp() << "] [INFO] ADD operation - Key: " << key 
               << ", Current entries: " << count << std::endl;
@@ -60,7 +60,7 @@ bool RedisHashMap::add(const std::string& key, const RedisObject& value) {
     size_t idx = getIndex(key);
     auto& bucket = buckets[idx];
 
-    // Check if key already exists → replace
+    // replace if key exists
     for (auto& entry : bucket) {
         if (entry.key == key) {
             entry.value = value;
@@ -78,7 +78,7 @@ bool RedisHashMap::add(const std::string& key, const RedisObject& value) {
               << ", Bucket index: " << idx << ", Total entries: " << count 
               << ", Load factor: " << currentLoadFactor << std::endl;
 
-    // Check load factor
+    // check load factor
     if (currentLoadFactor > loadFactor) {
         std::cout << "[" << getTimestamp() << "] [WARN] ADD - Load factor exceeded (" 
                   << currentLoadFactor << "), triggering resize..." << std::endl;
@@ -87,7 +87,7 @@ bool RedisHashMap::add(const std::string& key, const RedisObject& value) {
     return true;
 }
 
-// -------------------- Delete --------------------
+// delete
 bool RedisHashMap::del(const std::string& key) {
     std::cout << "[" << getTimestamp() << "] [INFO] DEL operation - Key: " << key 
               << ", Current entries: " << count << std::endl;
@@ -110,7 +110,7 @@ bool RedisHashMap::del(const std::string& key) {
     return false; // not found
 }
 
-// -------------------- Exists --------------------
+// exists
 bool RedisHashMap::exists(const std::string& key) const {
     size_t idx = getIndex(key);
     const auto& bucket = buckets[idx];
@@ -124,7 +124,7 @@ bool RedisHashMap::exists(const std::string& key) const {
     return found;
 }
 
-// -------------------- Rename --------------------
+// rename
 bool RedisHashMap::rename(const std::string& oldKey, const std::string& newKey) {
     std::cout << "[" << getTimestamp() << "] [INFO] RENAME operation - Old key: " << oldKey 
               << ", New key: " << newKey << std::endl;
@@ -139,13 +139,13 @@ bool RedisHashMap::rename(const std::string& oldKey, const std::string& newKey) 
 
     if (it == oldBucket.end()) {
         std::cout << "[" << getTimestamp() << "] [ERROR] RENAME - Old key not found: " << oldKey << std::endl;
-        return false; // oldKey not found
+        return false; // oldkey not found
     }
 
     RedisObject value = it->value;
     oldBucket.erase(it);
 
-    // Insert newKey
+    // insert newkey
     buckets[newIdx].emplace_back(newKey, value);
     std::cout << "[" << getTimestamp() << "] [INFO] RENAME - SUCCESS - Old key: " << oldKey 
               << " → New key: " << newKey << ", Old bucket: " << oldIdx 
@@ -153,7 +153,7 @@ bool RedisHashMap::rename(const std::string& oldKey, const std::string& newKey) 
     return true;
 }
 
-// -------------------- Copy --------------------
+// copy
 bool RedisHashMap::copy(const std::string& sourceKey, const std::string& destKey) {
     std::cout << "[" << getTimestamp() << "] [INFO] COPY operation - Source key: " << sourceKey 
               << ", Dest key: " << destKey << std::endl;
@@ -192,6 +192,6 @@ RedisObject* RedisHashMap::get(const std::string& key) {
 
     std::cout << "[" << getTimestamp() << "] [WARN] GET - Key not found: " << key 
               << ", Bucket index: " << idx << std::endl;
-    return nullptr; // not found
+    return nullptr; 
 }
 

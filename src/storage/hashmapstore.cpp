@@ -1,3 +1,8 @@
+// handles all hash type operations for our redis clone  
+// so any time we want to store multiple fields under a single key we use this system  
+// everything here is basically managing an unordered map inside a redisobject and acting like redis hash commands  
+// this is where behaviour for hset hget hdel hgetall hexists hlen is defined and hooked into our main redis hashmap  
+
 #include "storage/hashmapstore.hpp"
 #include "storage/RedisObject.hpp"
 #include <sstream>
@@ -5,8 +10,7 @@
 #include <chrono>
 
 namespace hashmapstore {
-
-// Utility function for timestamp
+// timestamp utility function this gives us a readable string for logs so we can trace when operations happened
 std::string getTimestamp() {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
@@ -15,7 +19,7 @@ std::string getTimestamp() {
     return buffer;
 }
 
-// -------------------- HSET --------------------
+// hset adds or updates a field in a hash if the key doesnt exist we create a whole new hash for it  
 std::string hset(RedisHashMap& map, const std::string& key,
                  const std::string& field, const std::string& value) {
     std::cout << "[" << getTimestamp() << "] [INFO] HSET operation started - Key: " << key 
@@ -48,7 +52,7 @@ std::string hset(RedisHashMap& map, const std::string& key,
     return isNew ? ":1" : ":0";
 }
 
-// -------------------- HGET --------------------
+// hget simply returns the value inside a hash for a specific field if key doesnt exist we return nil style like redis  
 std::string hget(RedisHashMap& map, const std::string& key,
                  const std::string& field) {
     std::cout << "[" << getTimestamp() << "] [INFO] HGET operation - Key: " << key 
@@ -77,7 +81,8 @@ std::string hget(RedisHashMap& map, const std::string& key,
     return it->second.getValue<std::string>();
 }
 
-// -------------------- HDEL --------------------
+// hdel deletes one or more fields from a hash  
+// returns number of fields removed similar to redis if key or field missing we just skip but count deleted
 std::string hdel(RedisHashMap& map, const std::string& key,
                  const std::vector<std::string>& fields) {
     std::cout << "[" << getTimestamp() << "] [INFO] HDEL operation - Key: " << key 
@@ -106,7 +111,7 @@ std::string hdel(RedisHashMap& map, const std::string& key,
     return ":" + std::to_string(deleted);
 }
 
-// -------------------- HGETALL --------------------
+// hgetall prints all fields and values in a hash returns a formatted structure similar to json but not exactly redis format  
 std::string hgetall(RedisHashMap& map, const std::string& key) {
     std::cout << "[" << getTimestamp() << "] [INFO] HGETALL operation - Key: " << key << std::endl;
     
@@ -137,7 +142,7 @@ std::string hgetall(RedisHashMap& map, const std::string& key) {
     return out.str();
 }
 
-// -------------------- HEXISTS --------------------
+// hexists checks if a field exists inside the hash 
 std::string hexists(RedisHashMap& map, const std::string& key,
                     const std::string& field) {
     std::cout << "[" << getTimestamp() << "] [INFO] HEXISTS operation - Key: " << key 
@@ -161,7 +166,8 @@ std::string hexists(RedisHashMap& map, const std::string& key,
     return exists ? ":1" : ":0";
 }
 
-// -------------------- HLEN --------------------
+// hlen returns number of fields in the hash  
+// basically size of the unordered map  
 std::string hlen(RedisHashMap& map, const std::string& key) {
     std::cout << "[" << getTimestamp() << "] [INFO] HLEN operation - Key: " << key << std::endl;
     
@@ -183,4 +189,4 @@ std::string hlen(RedisHashMap& map, const std::string& key) {
     return ":" + std::to_string(size);
 }
 
-} // namespace hashmapstore
+} 
