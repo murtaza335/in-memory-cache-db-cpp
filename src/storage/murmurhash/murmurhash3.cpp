@@ -1,11 +1,8 @@
 #include "storage/murmurhash/murmurhash3.hpp"
 #include <cstring>
 
-//-----------------------------------------------------------------------------
 // MurmurHash3 was written by Austin Appleby, and is placed in the public domain.
-// This is the 32-bit version (MurmurHash3_x86_32).
-//-----------------------------------------------------------------------------
-
+// This is the 32-bit version 
 uint32_t MurmurHash3_x86_32(const void * key, int len, uint32_t seed)
 {
     const uint8_t* data = (const uint8_t*)key;
@@ -16,11 +13,8 @@ uint32_t MurmurHash3_x86_32(const void * key, int len, uint32_t seed)
     const uint32_t c1 = 0xcc9e2d51;
     const uint32_t c2 = 0x1b873593;
 
-    //----------
     // body
-
     const uint32_t* blocks = (const uint32_t*)(data + nblocks * 4);
-
     for (int i = -nblocks; i; i++)
     {
         uint32_t k1 = blocks[i];
@@ -34,13 +28,9 @@ uint32_t MurmurHash3_x86_32(const void * key, int len, uint32_t seed)
         h1 = h1 * 5 + 0xe6546b64;
     }
 
-    //----------
     // tail
-
     const uint8_t* tail = (const uint8_t*)(data + nblocks * 4);
-
     uint32_t k1 = 0;
-
     switch (len & 3)
     {
         case 3: k1 ^= tail[2] << 16;
@@ -52,9 +42,7 @@ uint32_t MurmurHash3_x86_32(const void * key, int len, uint32_t seed)
                 h1 ^= k1;
     };
 
-    //----------
-    // finalization (fmix32)
-
+    // finalization 
     h1 ^= len;
 
     h1 ^= h1 >> 16;
@@ -66,10 +54,7 @@ uint32_t MurmurHash3_x86_32(const void * key, int len, uint32_t seed)
     return h1;
 }
 
-//-----------------------------------------------------------------------------
-// Overload for std::string
-//-----------------------------------------------------------------------------
-
+// Overload for string
 uint32_t MurmurHash3_x86_32(const std::string& str, uint32_t seed)
 {
     return MurmurHash3_x86_32(str.data(), (int)str.size(), seed);
