@@ -13,13 +13,12 @@
 #include <unordered_map>
 #include <stdexcept>
 
-// Constructor (dependency injection)
+// constructor 
 Parser::Parser(RedisHashMap& map)
     : baseMap(map) {}
 
-// --------------------------------------------------------
-// TOKENIZER — splits input into tokens by spaces
-// --------------------------------------------------------
+
+// tokenizer splits input into tokens by spaces
 std::vector<std::string> Parser::tokenize(const std::string& input) {
     std::vector<std::string> tokens;
     std::istringstream ss(input);
@@ -29,14 +28,12 @@ std::vector<std::string> Parser::tokenize(const std::string& input) {
     return tokens;
 }
 
-// --------------------------------------------------------
-// PUBLIC ENTRY POINT — called from your server
-// --------------------------------------------------------
+// public entry point called from your server
 std::string Parser::route(const std::string& rawInput) {
     if (rawInput.empty())
         return std::string("-ERR empty request");
 
-    // Cleanup TCP newlines
+    // cleanup tcp newlines
     std::string clean = rawInput;
     clean.erase(std::remove(clean.begin(), clean.end(), '\r'), clean.end());
     clean.erase(std::remove(clean.begin(), clean.end(), '\n'), clean.end());
@@ -49,21 +46,18 @@ std::string Parser::route(const std::string& rawInput) {
     return processCommand(tokens);
 }
 
-// -------------------------
-// Utility: uppercase a string
-// -------------------------
+// utility to change uppercase a string
 static std::string uppercpy(std::string s) {
     std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return std::toupper(c); });
     return s;
 }
 
-// --------------------------------------------------------
-// Command table (static)
-// --------------------------------------------------------
+
+// command table 
 static const std::unordered_map<std::string, Parser::CommandSpec>& buildCommandTable() {
-    // Construct once in a function-local static to avoid static initialization order issues.
+    // construct once in a functiolocal static toavoid static initialization order issues
     static const std::unordered_map<std::string, Parser::CommandSpec> table = {
-        // ---------------- STRING COMMANDS ----------------
+        // string commands
         { "SET",   { [](RedisHashMap& m, const std::vector<std::string>& t) {
                         if (t.size() < 3) return std::string("-ERR SET requires key value");
                         return stringstore::set(m, t[1], t[2]);
@@ -173,7 +167,7 @@ static const std::unordered_map<std::string, Parser::CommandSpec>& buildCommandT
                         return liststore::lprint(m, t[1]);
                     }, 2, 2, "LPRINT list" } },
 
-        // ---------------- SET COMMANDS ----------------
+        // set commands
         { "SADD",    { [](RedisHashMap& m, const std::vector<std::string>& t) {
                          if (t.size() < 3) return std::string("-ERR SADD requires set value");
                          return setstore::sadd(m, t[1], t[2]);
@@ -259,9 +253,9 @@ static const std::unordered_map<std::string, Parser::CommandSpec>& buildCommandT
         } catch (...) {
             return std::string("-ERR invalid seconds");
         }
-        // If key doesn't exist in DB, return 0
+        // if key doesnt exist in db return 0
         if (!m.exists(key)) return std::string(":0");
-        // ensure global TTL queue is created and started
+        // ensure global ttl queue is created and started
         TTLPriorityQueue* q = getGlobalTTL(&m);
         bool ok = q->insertOrUpdate(key, seconds);
         return ok ? std::string(":1") : std::string(":0");
@@ -271,9 +265,9 @@ static const std::unordered_map<std::string, Parser::CommandSpec>& buildCommandT
         {"TTL", { [](RedisHashMap& m, const std::vector<std::string>& t) {
                 if (t.size() < 2) return std::string("-ERR TTL requires key");
                 const std::string key = t[1];
-                // If key doesn't exist return -2
+                // return -2 when key doesnt exist
                 if (!m.exists(key)) return std::string(":-2");
-                // If TTL system not started yet, return -1 (no ttl set)
+                // if ttl not started return -1
                 TTLPriorityQueue* q = getGlobalTTL(&m);
                 long long rem = q->getTTLSeconds(key);
                 if (rem == -2) return std::string(":-2");
@@ -290,9 +284,8 @@ const std::unordered_map<std::string, Parser::CommandSpec>& Parser::getCommandTa
     return buildCommandTable();
 }
 
-// --------------------------------------------------------
-// INTERNAL: Command router — now uses table lookup
-// --------------------------------------------------------
+
+// command router now uses table lookup
 std::string Parser::processCommand(const std::vector<std::string>& tokens) {
     if (tokens.empty()) return std::string("-ERR empty command");
     std::string cmd = uppercpy(tokens[0]);
@@ -305,7 +298,7 @@ std::string Parser::processCommand(const std::vector<std::string>& tokens) {
 
     const CommandSpec& spec = it->second;
 
-    // Basic arity check
+    // basic arity check
     size_t tcount = tokens.size();
     if (tcount < static_cast<size_t>(spec.minArgs)) {
         return std::string("-ERR wrong number of arguments for ") + cmd;
@@ -314,11 +307,11 @@ std::string Parser::processCommand(const std::vector<std::string>& tokens) {
         return std::string("-ERR wrong number of arguments for ") + cmd;
     }
 
-    // Call the handler; handler is responsible for any deeper validation
+    // call the handler which is responsible for any deeper validation
     try {
         return spec.handler(baseMap, tokens);
     } catch (const std::exception& e) {
-        // Protect the server from exceptions in handlers
+        // protect the server from exceptions in handlers
         return std::string("-ERR handler exception: ") + e.what();
     } catch (...) {
         return std::string("-ERR unknown handler exception");
