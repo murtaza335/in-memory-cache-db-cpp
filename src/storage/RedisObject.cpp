@@ -1,7 +1,7 @@
 #include "storage/RedisObject.hpp"
 #include "storage/LinkedList.hpp"
 
-// ---------- Helper: clear pointer ----------
+// clear pointer header
 void RedisObject::clearPtr() {
     if (!ptr) return;
     switch (type) {
@@ -15,7 +15,6 @@ void RedisObject::clearPtr() {
             delete static_cast<bool*>(ptr);
             break;
         case RedisType::LIST:
-            // LIST here uses LinkedList* ownership (not std::vector)
             delete static_cast<LinkedList*>(ptr);
             break;
         case RedisType::HASH:
@@ -28,7 +27,7 @@ void RedisObject::clearPtr() {
     ptr = nullptr;
 }
 
-// ---------- Helper: clone pointer for deep copy ----------
+// -clone pointer for deep copy
 void* RedisObject::clonePtr() const {
     if (!ptr) return nullptr;
     switch (type) {
@@ -52,7 +51,7 @@ void* RedisObject::clonePtr() const {
     return nullptr;
 }
 
-// ---------- Constructors ----------
+// constructors
 RedisObject::RedisObject(int value) {
     type = RedisType::INT;
     ptr = new int(value);
@@ -75,7 +74,7 @@ RedisObject::RedisObject(LinkedList* list) {
 
 RedisObject::RedisObject(const std::vector<RedisObject>& value) {
     type = RedisType::LIST;
-    // If this ctor is used, store a vector (legacy/alternative representation)
+    // If this ctor is used store a vector
     ptr = new std::vector<RedisObject>(value);
 }
 
@@ -89,7 +88,7 @@ RedisObject::RedisObject(const std::unordered_set<RedisObject, RedisObjectHash, 
     ptr = new std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>(value);
 }
 
-// ---------- Copy constructor (deep copy) ----------
+// copy constructor deep
 RedisObject::RedisObject(const RedisObject& other) {
     type = other.type;
     if (other.ptr)
@@ -98,7 +97,7 @@ RedisObject::RedisObject(const RedisObject& other) {
         ptr = nullptr;
 }
 
-// ---------- Copy assignment (deep copy) ----------
+// copy asssignment deep
 RedisObject& RedisObject::operator=(const RedisObject& other) {
     if (this == &other) return *this;
     // free current
@@ -108,7 +107,7 @@ RedisObject& RedisObject::operator=(const RedisObject& other) {
     return *this;
 }
 
-// ---------- Move constructor ----------
+// moving constructor
 RedisObject::RedisObject(RedisObject&& other) noexcept {
     type = other.type;
     ptr = other.ptr;
@@ -116,7 +115,7 @@ RedisObject::RedisObject(RedisObject&& other) noexcept {
     // Optionally set other.type to some default; we leave it as-is
 }
 
-// ---------- Move assignment ----------
+// moving assignment
 RedisObject& RedisObject::operator=(RedisObject&& other) noexcept {
     if (this == &other) return *this;
     clearPtr();
@@ -126,17 +125,17 @@ RedisObject& RedisObject::operator=(RedisObject&& other) noexcept {
     return *this;
 }
 
-// ---------- Destructor ----------
+// destructor
 RedisObject::~RedisObject() {
     clearPtr();
 }
 
-// ---------- Type Getter ----------
+// type returner
 RedisType RedisObject::getType() const {
     return type;
 }
 
-// ---------- Equality ----------
+// eqwuality
 bool RedisObject::operator==(const RedisObject& other) const {
     if (type != other.type) return false;
     switch (type) {
@@ -155,7 +154,7 @@ bool RedisObject::operator==(const RedisObject& other) const {
     }
 }
 
-// ---------- Hash functions for RedisObject ----------
+// hashing for redis object
 std::size_t RedisObjectHash::operator()(const RedisObject& obj) const {
     switch (obj.type) {
         case RedisType::INT:

@@ -1,3 +1,7 @@
+// this file basically handles all operations for redis like sets in our custom storage  
+// every set is stored inside our main redis hashmap as a redisobject that internally holds an unordered set  
+// all these commands mimic the actual redis behaviour but simplified for our own db  
+
 #include "storage/RedisSets.hpp"
 #include <sstream>
 #include <algorithm>
@@ -5,7 +9,8 @@
 
 namespace setstore {
 
-    // ---------- Helper: get or create set ----------
+    // this helper either fetches the set if it already exists or creates a new empty one
+    // also if the key exists but is not a set we return nullptr so caller can send error
     std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>* getOrCreateSet(RedisHashMap& map, const std::string& key) {
         RedisObject* obj = map.get(key);
         if (!obj) {
@@ -18,7 +23,7 @@ namespace setstore {
         return static_cast<std::unordered_set<RedisObject, RedisObjectHash, RedisObjectEqual>*>(obj->getPtr());
     }
 
-    // ---------- SADD ----------
+    // sadd means insert a value into the set stored under key if key doesnt exist we create the set and then add the value
     std::string sadd(RedisHashMap& map, const std::string& key, const std::string& value) {
         auto* s = getOrCreateSet(map, key);
         if (!s) return "-ERR Key exists but is not a set";
@@ -26,7 +31,7 @@ namespace setstore {
         return std::to_string(inserted);
     }
 
-    // ---------- SREM ----------
+    // srem removes a value from a set if set exists and has the value it removes it and returns 1 otherwise 0
     std::string srem(RedisHashMap& map, const std::string& key, const std::string& value) {
         RedisObject* obj = map.get(key);
         if (!obj || obj->getType() != RedisType::SET) return "0";
@@ -35,7 +40,7 @@ namespace setstore {
         return std::to_string(erased);
     }
 
-    // ---------- SMEMBERS ----------
+    // smembers just dumps all members of the set in a single space separated string if key doesnt exist or isnt a set returns an error
     std::string smembers(RedisHashMap& map, const std::string& key) {
         RedisObject* obj = map.get(key);
         if (!obj || obj->getType() != RedisType::SET) return "-ERR no such set";
@@ -49,7 +54,7 @@ namespace setstore {
         return res;
     }
 
-    // ---------- SCARD ----------
+    // scard returns the count of elements inside the set
     std::string scard(RedisHashMap& map, const std::string& key) {
         RedisObject* obj = map.get(key);
         if (!obj || obj->getType() != RedisType::SET) return "0";
@@ -57,7 +62,8 @@ namespace setstore {
         return std::to_string(s->size());
     }
 
-    // ---------- SPOP ----------
+    // spop randomly picks and removes one element from the set
+    // random delete like redis spop
     std::string spop(RedisHashMap& map, const std::string& key) {
         RedisObject* obj = map.get(key);
         if (!obj || obj->getType() != RedisType::SET) return "-ERR no such set";
@@ -71,7 +77,7 @@ namespace setstore {
         return val;
     }
 
-    // ---------- SISMEMBER ----------
+    // sismember checks if a value is present inside the set returns 1 or 0
     std::string sismember(RedisHashMap& map, const std::string& key, const std::string& value) {
         RedisObject* obj = map.get(key);
         if (!obj || obj->getType() != RedisType::SET) return "0";
@@ -79,7 +85,8 @@ namespace setstore {
         return s->count(RedisObject(value)) ? "1" : "0";
     }
 
-    // ---------- SUNION ----------
+    // sunion combines members of two sets removes duplicates because set
+    // returns all unique values from set1 and set2
     std::string sunion(RedisHashMap& map, const std::string& key1, const std::string& key2) {
         RedisObject* obj1 = map.get(key1);
         RedisObject* obj2 = map.get(key2);
@@ -102,7 +109,8 @@ namespace setstore {
         return res;
     }
 
-    // ---------- SINTER ----------
+    // sinter finds common elements between two sets
+    // if either key doesnt have a valid set returns empty result
     std::string sinter(RedisHashMap& map, const std::string& key1, const std::string& key2) {
         RedisObject* obj1 = map.get(key1);
         RedisObject* obj2 = map.get(key2);
@@ -121,7 +129,8 @@ namespace setstore {
         return res;
     }
 
-    // ---------- SDIFF ----------
+    // sdiff does set difference meaning everything in set1 minus anything found in set2
+    // basically elements unique to first set
     std::string sdiff(RedisHashMap& map, const std::string& key1, const std::string& key2) {
         RedisObject* obj1 = map.get(key1);
         RedisObject* obj2 = map.get(key2);

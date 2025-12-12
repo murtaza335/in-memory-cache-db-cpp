@@ -9,7 +9,7 @@
 
 namespace liststore {
 
-// Utility function for timestamp
+// timestamp utility
 std::string getTimestamp() {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
@@ -18,7 +18,7 @@ std::string getTimestamp() {
     return buffer;
 }
 
-// -------------------- LPUSH --------------------
+// Lpush
 std::string lpush(RedisHashMap& map, const std::string& key, const std::string& value) {
     std::cout << "[" << getTimestamp() << "] [INFO] LPUSH operation - Key: " << key 
               << ", Value: " << value << std::endl;
@@ -49,7 +49,7 @@ std::string lpush(RedisHashMap& map, const std::string& key, const std::string& 
 }
 
 
-// -------------------- RPUSH --------------------
+// Rpush
 std::string rpush(RedisHashMap& map, const std::string& key, const std::string& value) {
     std::cout << "[" << getTimestamp() << "] [INFO] RPUSH operation - Key: " << key 
               << ", Value: " << value << std::endl;
@@ -80,7 +80,7 @@ std::string rpush(RedisHashMap& map, const std::string& key, const std::string& 
 }
 
 
-// -------------------- LPOP --------------------
+// Lpop
 std::string lpop(RedisHashMap& map, const std::string& key) {
     std::cout << "[" << getTimestamp() << "] [INFO] LPOP operation - Key: " << key << std::endl;
     
@@ -106,7 +106,7 @@ std::string lpop(RedisHashMap& map, const std::string& key) {
     return val;
 }
 
-// -------------------- RPOP --------------------
+// Rpop
 std::string rpop(RedisHashMap& map, const std::string& key) {
     std::cout << "[" << getTimestamp() << "] [INFO] RPOP operation - Key: " << key << std::endl;
     
@@ -132,7 +132,7 @@ std::string rpop(RedisHashMap& map, const std::string& key) {
     return val;
 }
 
-// -------------------- LLEN --------------------
+// Llen
 std::string llen(RedisHashMap& map, const std::string& key) {
     std::cout << "[" << getTimestamp() << "] [INFO] LLEN operation - Key: " << key << std::endl;
     
@@ -152,7 +152,7 @@ std::string llen(RedisHashMap& map, const std::string& key) {
     return ":" + std::to_string(list->size);
 }
 
-// -------------------- LINDEX --------------------
+// Lindex
 std::string lindex(RedisHashMap& map, const std::string& key, const std::string& indexStr) {
     std::cout << "[" << getTimestamp() << "] [INFO] LINDEX operation - Key: " << key 
               << ", Index: " << indexStr << std::endl;
@@ -187,7 +187,7 @@ std::string lindex(RedisHashMap& map, const std::string& key, const std::string&
     }
 }
 
-// -------------------- LSET --------------------
+// Lset
 std::string lset(RedisHashMap& map, const std::string& key, const std::string& indexStr, const std::string& value) {
     std::cout << "[" << getTimestamp() << "] [INFO] LSET operation - Key: " << key 
               << ", Index: " << indexStr << ", Value: " << value << std::endl;
@@ -272,7 +272,7 @@ std::string lsort(RedisHashMap& map, const std::string& key, const std::string& 
     return "+OK";
 }
 
-// -------------------- LPRINT --------------------
+// Lprint
 std::string lprint(RedisHashMap& map, const std::string& key) {
     std::cout << "[" << getTimestamp() << "] [INFO] LPRINT operation - Key: " << key << std::endl;
     
@@ -307,6 +307,4 @@ std::string lprint(RedisHashMap& map, const std::string& key) {
               << ", Elements: " << list->size << std::endl;
     return out.str();
 }
-
-
-} // namespace liststore
+} 
