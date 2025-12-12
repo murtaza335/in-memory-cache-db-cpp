@@ -3,6 +3,11 @@
 #include <cassert>
 #include <cmath>
 
+// this file implements the ttl priority queue used to track expiring keys.
+// each entry is stored with its expiration timestamp and ordered by soonest-to-expire.
+// the database uses this queue to efficiently process expired items.
+// it ensures that ttl checks are fast even at large scale.
+
 // logging utility with simple timestamp
 static std::string getTimestamp() {
     auto now_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
