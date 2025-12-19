@@ -1372,6 +1372,7 @@ in-memory-cache-db-cpp/
 ## 🤝 Contributing
 
 This is an academic project. For educational purposes, feel free to fork and experiment!
+If you find it useful, please consider giving it a star.
 
 ## 📄 License
 
