@@ -1343,30 +1343,43 @@ GET visits:today
 ```
 in-memory-cache-db-cpp/
 ├── include/
-│   ├── RedisHashMap.hpp
-│   ├── RedisObject.hpp
-│   ├── StringStore.hpp
-│   ├── ListStore.hpp
-│   ├── SetStore.hpp
-│   ├── HashMapStore.hpp
-│   ├── TTLManager.hpp
-│   ├── Parser.hpp
-│   ├── Server.hpp
-│   └── murmurhash3.hpp
+│   ├── parser/
+│   │   └── Parser.hpp
+│   ├── server/
+│   │   └── Server.hpp
+│   └── storage/
+│       ├── RedisHashMap.hpp
+│       ├── RedisObject.hpp
+│       ├── StringStore.hpp
+│       ├── ListStore.hpp
+│       ├── SetStore.hpp
+│       ├── HashMapStore.hpp
+│       ├── TTLManager.hpp
+│       └── murmurhash/
+│           └── murmurhash3.hpp
+│
 ├── src/
-│   ├── RedisHashMap.cpp
-│   ├── RedisObject.cpp
-│   ├── StringStore.cpp
-│   ├── ListStore.cpp
-│   ├── SetStore.cpp
-│   ├── HashMapStore.cpp
-│   ├── TTLManager.cpp
-│   ├── Parser.cpp
-│   ├── Server.cpp
+│   ├── parser/
+│   │   └── Parser.cpp
+│   ├── server/
+│   │   └── Server.cpp
+│   ├── storage/
+│   │   ├── RedisHashMap.cpp
+│   │   ├── RedisObject.cpp
+│   │   ├── StringStore.cpp
+│   │   ├── ListStore.cpp
+│   │   ├── SetStore.cpp
+│   │   ├── HashMapStore.cpp
+│   │   ├── TTLManager.cpp
+│   │   └── murmurhash/
+│   │       └── murmurhash3.cpp
+│   │
 │   └── main.cpp
+│
 ├── CMakeLists.txt
 ├── client.py
 └── README.md
+
 ```
 
 ## 🤝 Contributing
