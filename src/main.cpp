@@ -4,7 +4,6 @@
 #include "storage/RedisHashMap.hpp"
 #include "parser/parser.hpp"
 #include "server/server.hpp"
-#include <conio.h>
 
 int main() {
 
@@ -26,8 +25,5 @@ int main() {
         std::cout<<"check in main"<<std::endl;
     }
 
-
-
-    getch();
     return 0;
 }

@@ -2,136 +2,215 @@
 #include "parser/parser.hpp"
 #include <iostream>
 
-// structure to pass parameters to the client thread
+#ifdef _WIN32
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
+    #include <windows.h>
+    #pragma comment(lib, "ws2_32.lib")
+#else
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+    #include <unistd.h>
+    #include <pthread.h>
+    #include <cstring>
+#endif
+
+// structure to pass parameters to client thread
 struct ClientParam {
-    TcpServer* server;   // pointer to the tcp server instance
-    SOCKET clientSocket; // the client socket that this thread will handle
+    TcpServer* server;
+    sock_t clientSocket;
 };
 
-// constructor for tcp server
-// takes port number and a reference to the parser
+// constructor
 TcpServer::TcpServer(int port, Parser& p)
-    : port(port), serverSocket(INVALID_SOCKET), running(false), parser(p) 
+    : port(port), serverSocket(INVALID_SOCK), running(false), parser(p)
 {
-    InitializeCriticalSection(&cs); // initialize critical section for thread safety
+    INIT_MUTEX(cs);
 }
 
-// destructor for tcp server
+// destructor
 TcpServer::~TcpServer() {
-    stop(); // stop the server gracefully
-    DeleteCriticalSection(&cs); // delete the critical section
+    stop();
+    DESTROY_MUTEX(cs);
 }
 
-// start the tcp server
+// start the server
 bool TcpServer::start() {
+
+#ifdef _WIN32
     WSADATA wsa;
-    // initialize winsock
     if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
         std::cerr << "WSAStartup failed\n";
-        return false; // if fails, return false
+        return false;
     }
+#endif
 
-    // create a tcp socket
+    // create socket
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket == INVALID_SOCKET) {
+#ifdef _WIN32
+    if (serverSocket == INVALID_SOCKET)
+#else
+    if (serverSocket < 0)
+#endif
+    {
         std::cerr << "Socket creation failed\n";
+#ifdef _WIN32
         WSACleanup();
+#endif
         return false;
     }
 
-    // set up the server address structure
+#ifdef _WIN32
+    // allow quick reuse of port
+    int opt = 1;
+    setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt));
+#endif
+
+    // server address
     sockaddr_in serverAddr;
-    serverAddr.sin_family = AF_INET; // ipv4
-    serverAddr.sin_port = htons(port); // convert port to network byte order
-    serverAddr.sin_addr.s_addr = INADDR_ANY; // listen on all interfaces
+#ifdef _WIN32
+    ZeroMemory(&serverAddr, sizeof(serverAddr));
+#else
+    memset(&serverAddr, 0, sizeof(serverAddr));
+#endif
 
-    // bind the socket to the address and port
-    if (bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(port);
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+
+#ifdef _WIN32
+    if (bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
+#else
+    if (bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) < 0)
+#endif
+    {
         std::cerr << "Bind failed\n";
+#ifdef _WIN32
         closesocket(serverSocket);
         WSACleanup();
+#else
+        close(serverSocket);
+#endif
         return false;
     }
 
-    // start listening for incoming connections
-    if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
+#ifdef _WIN32
+    if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR)
+#else
+    if (listen(serverSocket, SOMAXCONN) < 0)
+#endif
+    {
         std::cerr << "Listen failed\n";
+#ifdef _WIN32
         closesocket(serverSocket);
         WSACleanup();
+#else
+        close(serverSocket);
+#endif
         return false;
     }
 
-    running = true; // mark the server as running
+    running = true;
     std::cout << "Server started on port " << port << "\n";
 
-    // main server loop to accept incoming clients
+    // accept loop
     while (running) {
         sockaddr_in clientAddr;
+#ifdef _WIN32
         int addrSize = sizeof(clientAddr);
-        // accept a new client connection
-        SOCKET clientSock = accept(serverSocket, (sockaddr*)&clientAddr, &addrSize);
-        if (clientSock == INVALID_SOCKET) {
-            if (!running) break; // if server stopped exit loop
+#else
+        socklen_t addrSize = sizeof(clientAddr);
+#endif
+
+        sock_t clientSock = accept(serverSocket, (sockaddr*)&clientAddr, &addrSize);
+
+#ifdef _WIN32
+        if (clientSock == INVALID_SOCKET)
+#else
+        if (clientSock < 0)
+#endif
+        {
+            if (!running) break;
             std::cerr << "Accept failed\n";
-            continue; // continue to next iteration
+            continue;
         }
 
-        // create a parameter structure for the client thread
-        ClientParam* param = new ClientParam;
-        param->server = this; // assign server pointer
-        param->clientSocket = clientSock; // assign client socket
+        ClientParam* param = new ClientParam{this, clientSock};
 
-        // create a new thread to handle this client
-        HANDLE hThread = CreateThread(NULL, 0, clientThread, param, 0, NULL);
-        if (hThread != NULL) CloseHandle(hThread); // close handle to detach thread
+#ifdef _WIN32
+        HANDLE hThread = CreateThread(nullptr, 0, clientThread, param, 0, nullptr);
+        if (hThread != nullptr) CloseHandle(hThread); // detach
+#else
+        pthread_t tid;
+        pthread_create(&tid, nullptr, clientThread, param);
+        pthread_detach(tid);
+#endif
     }
 
-    return true; // server started successfully
+    return true;
 }
 
-// stop the tcp server
+// stop the server
 void TcpServer::stop() {
-    if (!running) return; // if server not running, do nothing
+    if (!running) return;
 
-    running = false; // mark server as stopped
-    if (serverSocket != INVALID_SOCKET) {
-        closesocket(serverSocket); // close the listening socket
-        serverSocket = INVALID_SOCKET;
-    }
+    running = false;
 
-    WSACleanup(); // cleanup winsock resources
+#ifdef _WIN32
+    if (serverSocket != INVALID_SOCKET) closesocket(serverSocket);
+    WSACleanup();
+#else
+    if (serverSocket >= 0) close(serverSocket);
+#endif
+    serverSocket = INVALID_SOCK;
+
     std::cout << "Server stopped.\n";
 }
 
-// static function for client thread
-// each thread handles a single client
-DWORD WINAPI TcpServer::clientThread(LPVOID param) {
-    ClientParam* p = (ClientParam*)param; // cast parameter
+// static client thread function
+thread_ret_t THREAD_CALL TcpServer::clientThread(void* param) {
+    ClientParam* p = static_cast<ClientParam*>(param);
     if (p) {
-        p->server->handleClient(p->clientSocket); // call servers handleClient
-        delete p; // delete parameter to free memory
+        p->server->handleClient(p->clientSocket);
+        delete p;
     }
+
+#ifdef _WIN32
     return 0;
+#else
+    return nullptr;
+#endif
 }
 
-// handle communication with a single client
-void TcpServer::handleClient(SOCKET clientSocket) {
-    char buffer[4096]; // buffer to store received data
-    int bytesRecv;
+// handle client communication
+void TcpServer::handleClient(sock_t clientSocket) {
+    char buffer[4096];
 
     while (running) {
-        ZeroMemory(buffer, 4096); // clear buffer
-        bytesRecv = recv(clientSocket, buffer, 4096, 0); // receive data from client
-        if (bytesRecv <= 0) break; // if client disconnects or error break loop
+#ifdef _WIN32
+        ZeroMemory(buffer, sizeof(buffer));
+        int bytesRecv = recv(clientSocket, buffer, sizeof(buffer), 0);
+#else
+        memset(buffer, 0, sizeof(buffer));
+        ssize_t bytesRecv = recv(clientSocket, buffer, sizeof(buffer), 0);
+#endif
+        if (bytesRecv <= 0) break;
 
-        std::string received(buffer, bytesRecv); // convert buffer to string
-
-        // call parser to process received data
+        std::string received(buffer, bytesRecv);
         std::string response = parser.route(received);
 
-        // send the response back to the client
+#ifdef _WIN32
         send(clientSocket, response.c_str(), (int)response.size(), 0);
+#else
+        send(clientSocket, response.c_str(), response.size(), 0);
+#endif
     }
 
-    closesocket(clientSocket); // close the client socket when done
+#ifdef _WIN32
+    closesocket(clientSocket);
+#else
+    close(clientSocket);
+#endif
 }

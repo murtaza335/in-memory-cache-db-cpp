@@ -1,6 +1,6 @@
 import socket
 
-HOST = "10.7.236.254"   # Server address
+HOST = "192.168.18.79"   # Server address
 PORT = 6379          # Same port as your C++ server
 
 def main():
